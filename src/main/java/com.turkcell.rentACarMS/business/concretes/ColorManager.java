@@ -3,7 +3,10 @@ package com.turkcell.rentACarMS.business.concretes;
 import com.turkcell.rentACarMS.business.abstracts.ColorService;
 import com.turkcell.rentACarMS.business.dtos.ColorDto;
 import com.turkcell.rentACarMS.business.dtos.ListColorDto;
-import com.turkcell.rentACarMS.business.requests.CreateColorRequest;
+import com.turkcell.rentACarMS.business.requests.create.CreateColorRequest;
+import com.turkcell.rentACarMS.business.requests.delete.DeleteColorRequest;
+import com.turkcell.rentACarMS.business.requests.update.UpdateColorRequest;
+import com.turkcell.rentACarMS.core.concretes.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarMS.dataAccess.abstracts.ColorDao;
 import com.turkcell.rentACarMS.entities.concretes.Color;
@@ -35,7 +38,7 @@ public class ColorManager implements ColorService {
 	}
 
 	@Override
-	public void create(CreateColorRequest createColorRequest) throws Exception {
+	public void create(CreateColorRequest createColorRequest) throws BusinessException {
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		checkColorName(color);
 		this.colorDao.save(color);
@@ -43,22 +46,38 @@ public class ColorManager implements ColorService {
 	}
 
 	@Override
-	public ColorDto getById(int colorId) throws Exception {
+	public void update(UpdateColorRequest updateColorRequest) throws BusinessException {
+		Color color = this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
+		checkColorId(updateColorRequest.getColorId());
+		this.colorDao.save(color);
+
+	}
+
+	@Override
+	public void delete(DeleteColorRequest deleteColorRequest) throws BusinessException {
+		Color color = this.modelMapperService.forRequest().map(deleteColorRequest,Color.class);
+		checkColorId(color.getColorId());
+		this.colorDao.delete(color);
+
+	}
+
+	@Override
+	public ColorDto getById(int colorId) throws BusinessException {
 		checkColorId(colorId);
 		Color result = this.colorDao.getById(colorId);
 		ColorDto response = this.modelMapperService.forDto().map(result, ColorDto.class);
 		return response;
 	}
 
-	private void checkColorName(Color color) throws Exception {
+	private void checkColorName(Color color) throws BusinessException {
 		if (this.colorDao.existsByColorName(color.getColorName())) {
-			throw new Exception("Color is already exists");
+			throw new BusinessException("This color already exists");
 		}
 	}
 
-	private void checkColorId(int colorId) throws Exception {
+	private void checkColorId(int colorId) throws BusinessException {
 		if (!this.colorDao.existsByColorId(colorId)) {
-			throw new Exception("Color id can not defined");
+			throw new BusinessException("Color id could not be defined");
 		}
 
 	}
