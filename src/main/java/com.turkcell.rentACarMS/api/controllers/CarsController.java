@@ -6,7 +6,8 @@ import com.turkcell.rentACarMS.business.dtos.ListCarDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateCarRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteCarRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateCarRequest;
-import com.turkcell.rentACarMS.core.concretes.BusinessException;
+import com.turkcell.rentACarMS.core.utilities.results.DataResult;
+import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,27 +25,41 @@ public class CarsController {
     }
 
     @GetMapping("/listallcars")
-    public List<ListCarDto> listAll() {
-
+    public DataResult<List<ListCarDto>> listAll() {
         return this.carService.listAll();
     }
-
     @PostMapping("/createcar")
-    public void create(@RequestBody CreateCarRequest createCarRequest) throws BusinessException {
-        this.carService.create(createCarRequest);
+    public Result create(@RequestBody CreateCarRequest createCarRequest){
+        return this.carService.create(createCarRequest);
     }
     @DeleteMapping("/deletecar")
-    public void delete(@RequestBody DeleteCarRequest deleteCarRequest) throws BusinessException {
-        this.carService.delete(deleteCarRequest);
+    public Result delete(@RequestBody DeleteCarRequest deleteCarRequest){
+        return this.carService.delete(deleteCarRequest);
     }
     @PutMapping("/updatecar")
-    public void update(@RequestBody UpdateCarRequest updateCarRequest) throws BusinessException{
-        this.carService.update(updateCarRequest);
+    public Result update(@RequestBody UpdateCarRequest updateCarRequest){
+        return this.carService.update(updateCarRequest);
     }
 
     @GetMapping("/getbycarid")
-    public CarDto getById(@RequestParam int carId) throws BusinessException {
+    public DataResult<CarDto> getById(@RequestParam int carId){
         return this.carService.getById(carId);
     }
-
+    @GetMapping("/getallpaged")
+    DataResult<List<ListCarDto>> getAllPaged(int pageNo,int pageSize){
+        return this.carService.getAllPaged(pageNo, pageSize);
+    }
+    @GetMapping("/getalldescsorted")
+    DataResult<List<ListCarDto>> getAllDescSorted(){
+        return this.carService.getAllDescSorted();
+    }
+    @GetMapping("/getallascsorted")
+    DataResult<List<ListCarDto>> getAllAscSorted(){
+        return this.carService.getAllAscSorted();
+    }
+    @GetMapping("/findByCarDailyPriceLessThanEqual")
+    DataResult<List<ListCarDto>> findByCarDailyPriceLessThanEqual(double dailyPrice) {
+        return this.carService.findByCarDailyPriceLessThanEqual(dailyPrice);
+    }
 }
+
