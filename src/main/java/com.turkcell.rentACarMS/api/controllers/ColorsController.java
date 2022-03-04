@@ -6,7 +6,8 @@ import com.turkcell.rentACarMS.business.dtos.ListColorDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateColorRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteColorRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateColorRequest;
-import com.turkcell.rentACarMS.core.concretes.BusinessException;
+import com.turkcell.rentACarMS.core.utilities.results.DataResult;
+import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,26 +26,26 @@ public class ColorsController {
 	}
 
 	@GetMapping("/listallcolors")
-	public List<ListColorDto> listAll() {
+	public DataResult<List<ListColorDto>> listAll() {
 
 		return this.colorService.listAll();
 	}
 
 	@PostMapping("/createcolor")
-	public void create(@RequestBody CreateColorRequest createColorRequest) throws BusinessException {
-		this.colorService.create(createColorRequest);
+	public Result create(@RequestBody CreateColorRequest createColorRequest){
+		return this.colorService.create(createColorRequest);
 	}
 
 	@DeleteMapping("/deletecolor")
-	public void delete(@RequestBody DeleteColorRequest deleteColorRequest) throws BusinessException {
-		this.colorService.delete(deleteColorRequest);
+	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest) {
+		return this.colorService.delete(deleteColorRequest);
 	}
 	@PutMapping("/updatecolor")
-	public void update(@RequestBody UpdateColorRequest updateColorRequest) throws BusinessException{
-		this.colorService.update(updateColorRequest);
+	public Result update(@RequestBody UpdateColorRequest updateColorRequest){
+		return this.colorService.update(updateColorRequest);
 	}
 	@GetMapping("/getbycolorid")
-	public ColorDto getById(@RequestParam int colorId) throws BusinessException {
+	public DataResult<ColorDto> getById(@RequestParam int colorId){
 		return this.colorService.getById(colorId);
 	}
 

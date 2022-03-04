@@ -121,6 +121,6 @@ public class CarManager implements CarService {
         if (cars.isEmpty()){
             return new ErrorDataResult<List<Car>>("Car list is empty.");
         }
-        return new SuccessResult();
+        return new SuccessDataResult<>();
     }
 }

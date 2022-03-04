@@ -6,7 +6,8 @@ import com.turkcell.rentACarMS.business.dtos.ListBrandDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateBrandRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteBrandRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateBrandRequest;
-import com.turkcell.rentACarMS.core.concretes.BusinessException;
+import com.turkcell.rentACarMS.core.utilities.results.DataResult;
+import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,26 +25,26 @@ public class BrandsController {
 	}
 	
 	@GetMapping("/listallbrands")
-	public List<ListBrandDto> listAll(){
+	public DataResult<List<ListBrandDto>> listAll(){
 
 		return this.brandService.listAll();
 	}
 	
 	@PostMapping("/createbrand")
-	public void create(@RequestBody CreateBrandRequest createBrandRequest) throws BusinessException {
-		this.brandService.create(createBrandRequest);
+	public Result create(@RequestBody CreateBrandRequest createBrandRequest){
+		return this.brandService.create(createBrandRequest);
 	}
 	@DeleteMapping("/deletebrand")
-	public void delete(@RequestBody DeleteBrandRequest deleteBrandRequest) throws BusinessException{
-		this.brandService.delete(deleteBrandRequest);
+	public Result delete(@RequestBody DeleteBrandRequest deleteBrandRequest){
+		return this.brandService.delete(deleteBrandRequest);
 	}
 	@PutMapping("/updatebrand")
-	public void update(@RequestBody UpdateBrandRequest updateBrandRequest)throws BusinessException{
-		this.brandService.update(updateBrandRequest);
+	public Result update(@RequestBody UpdateBrandRequest updateBrandRequest){
+		return this.brandService.update(updateBrandRequest);
 	}
 
 	@GetMapping("/getbybrandid")
-	public BrandDto getById(@RequestParam int brandId) throws BusinessException{
+	public DataResult<BrandDto> getById(@RequestParam int brandId){
 		return this.brandService.getById(brandId);
 	}
 
