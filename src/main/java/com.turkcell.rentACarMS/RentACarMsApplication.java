@@ -1,5 +1,6 @@
 package com.turkcell.rentACarMS;
 
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.results.ErrorDataResult;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
@@ -37,6 +38,12 @@ public class RentACarMsApplication {
 			validationErrors.put(fieldError.getField(),fieldError.getDefaultMessage());
 		}
 		ErrorDataResult<Object> errorDataResult = new ErrorDataResult<Object>(validationErrors,"Validation.Errors");
+		return errorDataResult;
+	}
+	@ExceptionHandler
+	@ResponseStatus(code= HttpStatus.BAD_REQUEST)
+	public ErrorDataResult<Object> handleBusinessExceptions(BusinessException businessException){
+		ErrorDataResult<Object> errorDataResult = new ErrorDataResult<Object>(businessException.getMessage(),"Business Exception Error");
 		return errorDataResult;
 	}
 }
