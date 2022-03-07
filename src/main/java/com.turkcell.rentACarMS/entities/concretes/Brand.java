@@ -16,12 +16,12 @@ public class Brand {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="brand_id")
-	private int brandId;
+	@Column(name="id")
+	private int id;
 	
 	@Column(name="brand_name")
 	private String brandName;
 
-	@OneToMany
+	@OneToMany(mappedBy = "brand")
 	private List<Car> cars;
 }

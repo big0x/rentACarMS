@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ColorDao extends JpaRepository<Color, Integer> {
 
-	boolean existsByColorId(int id);
+	boolean existsById(int id);
 	
 	boolean existsByColorName(String name);
 }

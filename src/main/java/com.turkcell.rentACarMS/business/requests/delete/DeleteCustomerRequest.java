@@ -10,10 +10,9 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteColorRequest {
+public class DeleteCustomerRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int colorId;
-
+    private int customerId;
 }

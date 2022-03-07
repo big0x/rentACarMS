@@ -37,14 +37,15 @@ public class CarManager implements CarService {
         }
         List<ListCarDto> listCarDto = cars.stream().map(car -> this.modelMapperService
                 .forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto,"Data Listed.");
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " : Cars found.");
     }
 
     @Override
     public Result create(CreateCarRequest createCarRequest) {
         Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
+        car.setActive(true);
         this.carDao.save(car);
-        return new SuccessResult("Car Added with id: " + car.getCarId());
+        return new SuccessResult("Car added with id: " + car.getId());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class CarManager implements CarService {
         Car car = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
         checkCarId(updateCarRequest.getCarId());
         this.carDao.save(car);
-        return new SuccessResult("Car.Updated");
+        return new SuccessResult(updateCarRequest.getCarId() + " : Car updated.");
 
     }
 
@@ -62,9 +63,9 @@ public class CarManager implements CarService {
             return new ErrorDataResult<CarDto>(checkCarId(deleteCarRequest.getCarId()).getMessage());
         }
         Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
-        checkCarId(car.getCarId());
+        checkCarId(car.getId());
         this.carDao.delete(car);
-        return new SuccessResult("Car.Deleted");
+        return new SuccessResult(deleteCarRequest.getCarId() + " : Car deleted.");
     }
 
     @Override
@@ -74,7 +75,7 @@ public class CarManager implements CarService {
         }
         Car car = this.carDao.getById(carId);
         CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
-        return new SuccessDataResult<CarDto>(carDto);
+        return new SuccessDataResult<CarDto>(carDto,"Car found.");
     }
 
     @Override
@@ -82,7 +83,7 @@ public class CarManager implements CarService {
         Pageable pageable = PageRequest.of(pageNo-1,pageSize);
         List<Car> result = this.carDao.findAll(pageable).getContent();
         List<ListCarDto> response = result.stream().map(car -> this.modelMapperService.forDto().map(car,ListCarDto.class)).collect(Collectors.toList());
-        return new SuccessDataResult<List<ListCarDto>>(response);
+        return new SuccessDataResult<List<ListCarDto>>(response,"Car list paged.");
     }
 
     @Override
@@ -90,7 +91,7 @@ public class CarManager implements CarService {
         Sort sort = Sort.by(Sort.Direction.DESC,"carDailyPrice");
         List<Car> descCars = this.carDao.findAll(sort);
         List<ListCarDto> listCarDto = descCars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto);
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto,"Cars sorted in descending order");
     }
 
     @Override
@@ -98,7 +99,7 @@ public class CarManager implements CarService {
         Sort sort = Sort.by(Sort.Direction.ASC,"carDailyPrice");
         List<Car> ascCars = this.carDao.findAll(sort);
         List<ListCarDto> listCarDto = ascCars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto);
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto, "Cars sorted in ascending order");
     }
 
     @Override
@@ -108,11 +109,11 @@ public class CarManager implements CarService {
             return new ErrorDataResult<List<ListCarDto>>(null,"There is no results.");
         }
         List<ListCarDto> listCarDto = cars.stream().map(car -> this.modelMapperService.forDto().map(car,ListCarDto.class)).collect(Collectors.toList());
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto);
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " Cars found.");
     }
 
     private Result checkCarId(int carId) {
-        if (!this.carDao.existsByCarId(carId)) {
+        if (!this.carDao.existsById(carId)) {
             return new ErrorResult("Car not found.");
         }
         return new SuccessResult();

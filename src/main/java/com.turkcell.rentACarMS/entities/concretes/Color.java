@@ -16,12 +16,12 @@ public class Color {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="color_id")
-	private int colorId;
+	@Column(name="id")
+	private int id;
 	
 	@Column(name="color_name")
 	private String colorName;
 
-	@OneToMany
+	@OneToMany(mappedBy = "color")
 	private List<Car> cars;
 }

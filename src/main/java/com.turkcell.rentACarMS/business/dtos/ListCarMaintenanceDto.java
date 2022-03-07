@@ -4,17 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListCarDto {
-
+public class ListCarMaintenanceDto {
+    private int maintenanceId;
     private int carId;
     private String brandName;
     private String colorName;
-    private double carDailyPrice;
-    private int carModelYear;
-    private String description;
-    private boolean isActive;
-
+    private String carMaintenanceDescription;
+    private LocalDate carMaintenanceReturnDate;
+    private boolean carIsActive;
 }

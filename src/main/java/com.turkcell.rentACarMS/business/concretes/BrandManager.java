@@ -37,7 +37,7 @@ public class BrandManager implements BrandService {
 		}
 		List<ListBrandDto> listBrandDto = brands.stream().map(brand -> this.modelMapperService
 				.forDto().map(brand, ListBrandDto.class)).collect(Collectors.toList());
-		return new SuccessDataResult<List<ListBrandDto>>(listBrandDto,"Brand Data Listed.");
+		return new SuccessDataResult<List<ListBrandDto>>(listBrandDto,listBrandDto.size() + " : Brands found.");
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class BrandManager implements BrandService {
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		checkBrandName(brand);
 		this.brandDao.save(brand);
-		return new SuccessResult("Brand Added : " + brand.getBrandName());
+		return new SuccessResult("Brand added : " + brand.getBrandName());
 		
 	}
 	@Override
@@ -54,16 +54,16 @@ public class BrandManager implements BrandService {
 			return new ErrorDataResult<BrandDto>(checkBrandId(deleteBrandRequest.getBrandId()).getMessage());
 		}
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
-		checkBrandId(brand.getBrandId());
+		checkBrandId(brand.getId());
 		this.brandDao.delete(brand);
-		return new SuccessResult("Brand.Deleted");
+		return new SuccessResult("Brand deleted.");
 	}
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) {
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
 		checkBrandId(updateBrandRequest.getBrandId());
 		this.brandDao.save(brand);
-		return new SuccessResult("Brand Updated.");
+		return new SuccessResult("Brand updated.");
 
 	}
 
@@ -78,13 +78,13 @@ public class BrandManager implements BrandService {
 	}
 	private Result checkBrandName(Brand brand) {
 		if (this.brandDao.existsByBrandName(brand.getBrandName())){
-			return new ErrorResult("This brand already exists");
+			return new ErrorResult("This brand already exists.");
 		}
 		return new SuccessResult();
 	}
 	private Result checkBrandId(int brandId) {
-		if (!this.brandDao.existsByBrandId(brandId)){
-			return new ErrorResult("Brand id could not be defined");
+		if (!this.brandDao.existsById(brandId)){
+			return new ErrorResult("Brand id could not be defined.");
 		}
 		return new SuccessResult();
 	}

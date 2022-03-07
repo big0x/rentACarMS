@@ -4,31 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCarRequest {
-
-    @NotNull
-    @Min(0)
-    @Max(100)
-    private double carDailyPrice;
-    @NotNull
-    @Min(0)
-    @Max(2022)
-    private int carModelYear;
+public class CreateCustomerRequest {
     @NotNull
     @Size(min = 0,max = 250)
-    private String description;
-
+    private String customerFirstName;
     @NotNull
-    private int brandId;
-
+    @Size(min = 0,max = 250)
+    private String customerLastName;
     @NotNull
-    private int colorId;
+    @Size(min = 0,max = 250)
+    @Email
+    private String customerEmail;
 }

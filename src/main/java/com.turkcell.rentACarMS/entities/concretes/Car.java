@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,8 +15,8 @@ import javax.persistence.*;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="car_id")
-    private int carId;
+    @Column(name="id")
+    private int id;
 
     @Column(name="car_daily_price")
     private double carDailyPrice;
@@ -33,6 +34,15 @@ public class Car {
     @ManyToOne
     @JoinColumn(name="color_id")
     private Color color;
+
+    @Column(name="is_active")
+    private boolean isActive = true;
+
+    @OneToMany(mappedBy = "car")
+    private List<CarMaintenance> carMaintenances;
+
+    @OneToMany(mappedBy = "car")
+    private List<Rental> rentals;
 
 
 }

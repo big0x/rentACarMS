@@ -11,6 +11,7 @@ import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,15 +32,15 @@ public class BrandsController {
 	}
 	
 	@PostMapping("/createbrand")
-	public Result create(@RequestBody CreateBrandRequest createBrandRequest){
+	public Result create(@RequestBody @Valid CreateBrandRequest createBrandRequest){
 		return this.brandService.create(createBrandRequest);
 	}
 	@DeleteMapping("/deletebrand")
-	public Result delete(@RequestBody DeleteBrandRequest deleteBrandRequest){
+	public Result delete(@RequestBody @Valid DeleteBrandRequest deleteBrandRequest){
 		return this.brandService.delete(deleteBrandRequest);
 	}
 	@PutMapping("/updatebrand")
-	public Result update(@RequestBody UpdateBrandRequest updateBrandRequest){
+	public Result update(@RequestBody @Valid UpdateBrandRequest updateBrandRequest){
 		return this.brandService.update(updateBrandRequest);
 	}
 

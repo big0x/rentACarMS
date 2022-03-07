@@ -36,7 +36,7 @@ public class ColorManager implements ColorService {
 		}
 		List<ListColorDto> listColorDto = colors.stream().map(color -> this.modelMapperService
 				.forDto().map(color, ListColorDto.class)).collect(Collectors.toList());
-		return new SuccessDataResult<List<ListColorDto>>(listColorDto,"Color Data Listed.");
+		return new SuccessDataResult<List<ListColorDto>>(listColorDto,listColorDto.size()+" : Colors found.");
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ColorManager implements ColorService {
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		checkColorName(color);
 		this.colorDao.save(color);
-		return new SuccessResult("Color Added : " + color.getColorName());
+		return new SuccessResult("Color added : " + color.getColorName());
 
 	}
 
@@ -53,7 +53,7 @@ public class ColorManager implements ColorService {
 		Color color = this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
 		checkColorId(updateColorRequest.getColorId());
 		this.colorDao.save(color);
-		return new SuccessResult("Color Updated");
+		return new SuccessResult(updateColorRequest.getColorId() + " : Color updated.");
 
 	}
 
@@ -63,9 +63,9 @@ public class ColorManager implements ColorService {
 			return new ErrorDataResult<ColorDto>(checkColorId(deleteColorRequest.getColorId()).getMessage());
 		}
 		Color color = this.modelMapperService.forRequest().map(deleteColorRequest,Color.class);
-		checkColorId(color.getColorId());
+		checkColorId(color.getId());
 		this.colorDao.delete(color);
-		return new SuccessResult("Color.Deleted");
+		return new SuccessResult(deleteColorRequest.getColorId() + " : Color deleted.");
 
 	}
 
@@ -76,19 +76,19 @@ public class ColorManager implements ColorService {
 		}
 		Color color = this.colorDao.getById(colorId);
 		ColorDto colorDto = this.modelMapperService.forDto().map(color, ColorDto.class);
-		return new SuccessDataResult<ColorDto>(colorDto);
+		return new SuccessDataResult<ColorDto>(colorDto,"Color found.");
 	}
 
 	private Result checkColorName(Color color) {
 		if (this.colorDao.existsByColorName(color.getColorName())) {
-			return new ErrorResult("This color already exists");
+			return new ErrorResult("This color already exists.");
 		}
 		return new SuccessResult();
 	}
 
 	private Result checkColorId(int colorId)  {
-		if (!this.colorDao.existsByColorId(colorId)) {
-			return new ErrorResult("Color id could not be defined");
+		if (!this.colorDao.existsById(colorId)) {
+			return new ErrorResult("Color id could not be defined.");
 		}
 		return new SuccessResult();
 

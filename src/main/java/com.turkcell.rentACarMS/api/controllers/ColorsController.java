@@ -11,6 +11,7 @@ import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,16 +33,16 @@ public class ColorsController {
 	}
 
 	@PostMapping("/createcolor")
-	public Result create(@RequestBody CreateColorRequest createColorRequest){
+	public Result create(@RequestBody @Valid CreateColorRequest createColorRequest){
 		return this.colorService.create(createColorRequest);
 	}
 
 	@DeleteMapping("/deletecolor")
-	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest) {
+	public Result delete(@RequestBody @Valid DeleteColorRequest deleteColorRequest) {
 		return this.colorService.delete(deleteColorRequest);
 	}
 	@PutMapping("/updatecolor")
-	public Result update(@RequestBody UpdateColorRequest updateColorRequest){
+	public Result update(@RequestBody @Valid UpdateColorRequest updateColorRequest){
 		return this.colorService.update(updateColorRequest);
 	}
 	@GetMapping("/getbycolorid")

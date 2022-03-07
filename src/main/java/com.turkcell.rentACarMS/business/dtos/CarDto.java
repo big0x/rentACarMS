@@ -13,5 +13,6 @@ public class CarDto {
     private double carDailyPrice;
     private int carModelYear;
     private String description;
+    private boolean isActive;
 
 }

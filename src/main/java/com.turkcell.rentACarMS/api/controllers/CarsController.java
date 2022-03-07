@@ -11,6 +11,7 @@ import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,6 @@ public class CarsController {
 
     @Autowired
     public CarsController(CarService carService) {
-
         this.carService = carService;
     }
 
@@ -29,15 +29,15 @@ public class CarsController {
         return this.carService.listAll();
     }
     @PostMapping("/createcar")
-    public Result create(@RequestBody CreateCarRequest createCarRequest){
+    public Result create(@RequestBody @Valid CreateCarRequest createCarRequest){
         return this.carService.create(createCarRequest);
     }
     @DeleteMapping("/deletecar")
-    public Result delete(@RequestBody DeleteCarRequest deleteCarRequest){
+    public Result delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest){
         return this.carService.delete(deleteCarRequest);
     }
     @PutMapping("/updatecar")
-    public Result update(@RequestBody UpdateCarRequest updateCarRequest){
+    public Result update(@RequestBody @Valid UpdateCarRequest updateCarRequest){
         return this.carService.update(updateCarRequest);
     }
 
