@@ -25,4 +25,6 @@ public class UpdateRentalRequest {
     private int carId;
     @NotNull
     private int customerId;
+
+    private int additionalServiceId;
 }

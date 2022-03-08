@@ -1,5 +1,6 @@
 package com.turkcell.rentACarMS.entities.concretes;
 
+import com.turkcell.rentACarMS.entities.enums.CarStates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,8 +36,8 @@ public class Car {
     @JoinColumn(name="color_id")
     private Color color;
 
-    @Column(name="is_active")
-    private boolean isActive = true;
+    @Column(name="state")
+    private CarStates carStates;
 
     @OneToMany(mappedBy = "car")
     private List<CarMaintenance> carMaintenances;

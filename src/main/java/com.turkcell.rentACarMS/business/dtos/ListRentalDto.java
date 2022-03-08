@@ -13,6 +13,7 @@ public class ListRentalDto {
     private int rentalId;
     private int customerId;
     private int carId;
+    private int additionalServiceId;
     private LocalDate rentalRentDate;
     private LocalDate rentalReturnDate;
     private boolean carIsActive;

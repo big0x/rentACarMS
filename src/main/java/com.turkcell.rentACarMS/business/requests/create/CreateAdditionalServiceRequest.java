@@ -1,6 +1,5 @@
 package com.turkcell.rentACarMS.business.requests.create;
 
-import com.turkcell.rentACarMS.entities.enums.CarStates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,25 +12,17 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCarRequest {
-
+public class CreateAdditionalServiceRequest {
+    @NotNull
+    @Size(min = 2,max = 50)
+    private String additionalServiceName;
     @NotNull
     @Min(0)
     @Max(100)
-    private double carDailyPrice;
+    private double additionalServicePrice;
     @NotNull
-    @Min(0)
-    @Max(2022)
-    private int carModelYear;
-    @NotNull
-    @Size(min = 0,max = 250)
-    private String description;
+    @Size(min = 2,max = 250)
+    private String additionalServiceDescription;
 
-    @NotNull
-    private int brandId;
 
-    @NotNull
-    private int colorId;
-    @NotNull
-    private CarStates carStates;
 }

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,6 @@ public class Rental {
     @ManyToOne
     @JoinColumn(name="customer_id",referencedColumnName = "id")
     private Customer customer;
+    @OneToMany(mappedBy = "rental")
+    private List<OrderedAdditionalService> orderedAdditionalService;
 }

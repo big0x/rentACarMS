@@ -1,5 +1,6 @@
 package com.turkcell.rentACarMS.entities.concretes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,6 @@ public class Brand {
 	private String brandName;
 
 	@OneToMany(mappedBy = "brand")
+	@JsonIgnore
 	private List<Car> cars;
 }

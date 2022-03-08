@@ -43,7 +43,6 @@ public class CarManager implements CarService {
     @Override
     public Result create(CreateCarRequest createCarRequest) {
         Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
-        car.setActive(true);
         this.carDao.save(car);
         return new SuccessResult("Car added with id: " + car.getId());
     }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RentalDao extends JpaRepository<Rental,Integer> {
-    boolean existsById(int id);
+    //List<Rental> listAllByCustomerId(int customerId);
 }

@@ -42,8 +42,10 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public Result create(CreateBrandRequest createBrandRequest){
+		if (!checkBrandName(createBrandRequest.getBrandName()).isSuccess()){
+			return new ErrorResult(checkBrandName(createBrandRequest.getBrandName()).getMessage());
+		}
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
-		checkBrandName(brand);
 		this.brandDao.save(brand);
 		return new SuccessResult("Brand added : " + brand.getBrandName());
 		
@@ -51,7 +53,7 @@ public class BrandManager implements BrandService {
 	@Override
 	public Result delete(DeleteBrandRequest deleteBrandRequest) {
 		if (!checkBrandId(deleteBrandRequest.getBrandId()).isSuccess()){
-			return new ErrorDataResult<BrandDto>(checkBrandId(deleteBrandRequest.getBrandId()).getMessage());
+			return new ErrorResult(checkBrandId(deleteBrandRequest.getBrandId()).getMessage());
 		}
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
 		checkBrandId(brand.getId());
@@ -60,8 +62,10 @@ public class BrandManager implements BrandService {
 	}
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) {
+		if(!checkBrandId(updateBrandRequest.getBrandId()).isSuccess()){
+			return new ErrorResult(checkBrandName(updateBrandRequest.getBrandName()).getMessage());
+		}
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
-		checkBrandId(updateBrandRequest.getBrandId());
 		this.brandDao.save(brand);
 		return new SuccessResult("Brand updated.");
 
@@ -76,8 +80,8 @@ public class BrandManager implements BrandService {
 		BrandDto brandDto = this.modelMapperService.forDto().map(brand,BrandDto.class);
 		return new SuccessDataResult<BrandDto>(brandDto);
 	}
-	private Result checkBrandName(Brand brand) {
-		if (this.brandDao.existsByBrandName(brand.getBrandName())){
+	private Result checkBrandName(String brandName) {
+		if (this.brandDao.existsByBrandName(brandName)){
 			return new ErrorResult("This brand already exists.");
 		}
 		return new SuccessResult();

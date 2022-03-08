@@ -12,6 +12,7 @@ import com.turkcell.rentACarMS.dataAccess.abstracts.CarDao;
 import com.turkcell.rentACarMS.dataAccess.abstracts.CarMaintenanceDao;
 import com.turkcell.rentACarMS.entities.concretes.Car;
 import com.turkcell.rentACarMS.entities.concretes.CarMaintenance;
+import com.turkcell.rentACarMS.entities.enums.CarStates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +35,8 @@ public class CarMaintenanceManager implements CarMaintenanceService {
     @Override
     public DataResult<List<ListCarMaintenanceDto>> listAll() {
         List<CarMaintenance> carMaintenances = this.carMaintenanceDao.findAll();
-        if(!checkCarMaintanceListEmpty(carMaintenances).isSuccess()){
-            return new ErrorDataResult<List<ListCarMaintenanceDto>>(checkCarMaintanceListEmpty(carMaintenances).getMessage());
+        if(!checkCarMaintenanceListEmpty(carMaintenances).isSuccess()){
+            return new ErrorDataResult<List<ListCarMaintenanceDto>>(checkCarMaintenanceListEmpty(carMaintenances).getMessage());
         }
         List<ListCarMaintenanceDto> listCarMaintenanceDto = carMaintenances.stream().map(carMaintenance -> this.modelMapperService.forDto().map(carMaintenance, ListCarMaintenanceDto.class)).collect(Collectors.toList());
         return new SuccessDataResult<List<ListCarMaintenanceDto>>(listCarMaintenanceDto,listCarMaintenanceDto.size()+" : Car maintenance found.");
@@ -44,10 +45,9 @@ public class CarMaintenanceManager implements CarMaintenanceService {
     @Override
     public Result create(CreateCarMaintenanceRequest createCarMaintenanceRequest) {
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest, CarMaintenance.class);
-        carMaintenance.setId(0);
         Car car = this.carDao.findById(createCarMaintenanceRequest.getCarId());
         if(checkIfCarActive(car.getId()).isSuccess()){
-            car.setActive(false);//Araç bakıma girdiği için pasif hale getirildi.
+            car.setCarStates(CarStates.IN_MAINTENANCE);
             this.carDao.save(car);
             this.carMaintenanceDao.save(carMaintenance);
             return new SuccessResult("Car maintenance added with id: " + carMaintenance.getId());
@@ -90,7 +90,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
         }
         return new SuccessResult();
     }
-    private Result checkCarMaintanceListEmpty(List<CarMaintenance> carMaintenances){
+    private Result checkCarMaintenanceListEmpty(List<CarMaintenance> carMaintenances){
         if(carMaintenances.isEmpty()){
             return new ErrorDataResult<List<CarMaintenance>>("Car maintenance list is empty.");
         }
@@ -99,9 +99,10 @@ public class CarMaintenanceManager implements CarMaintenanceService {
     }
     private Result checkIfCarActive(int carId){
         Car car = this.carDao.findById(carId);
-        if (car.isActive()){
+        CarStates carStates = car.getCarStates();
+        if (carStates.ordinal()==0){
             return new SuccessResult();
         }
-        return new ErrorResult("Car is passive.");
+        return new ErrorResult("Car is not available.");
     }
 }

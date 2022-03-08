@@ -11,6 +11,7 @@ import com.turkcell.rentACarMS.core.utilities.results.*;
 import com.turkcell.rentACarMS.dataAccess.abstracts.CarDao;
 import com.turkcell.rentACarMS.dataAccess.abstracts.RentalDao;
 import com.turkcell.rentACarMS.entities.concretes.Car;
+import com.turkcell.rentACarMS.entities.enums.CarStates;
 import com.turkcell.rentACarMS.entities.concretes.Rental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class RentalManager implements RentalService {
         rental.setId(0);
         Car car = this.carDao.findById(createRentalRequest.getCarId());
         if(checkIfCarActive(car.getId()).isSuccess()){
-            car.setActive(false);//Araç kiralandığı için pasif hale getirildi.
+            car.setCarStates(CarStates.ON_RENT);//Araç kiralandığı için tipi "kirada" hale getirildi.
             this.carDao.save(car);
             this.rentalDao.save(rental);
             return new SuccessResult("Rental added with id: " + rental.getId());
@@ -99,9 +100,10 @@ public class RentalManager implements RentalService {
     }
     private Result checkIfCarActive(int carId){
         Car car = this.carDao.findById(carId);
-        if (car.isActive()){
+        CarStates carStates = car.getCarStates();
+        if (carStates.ordinal()==0){
             return new SuccessResult();
         }
-        return new ErrorResult("Car is passive.");
+        return new ErrorResult("Car is not available.");
     }
 }

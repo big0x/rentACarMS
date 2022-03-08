@@ -11,5 +11,6 @@ public class ListCustomerDto {
     private int customerId;
     private String customerFirstName;
     private String customerLastName;
-    private String customerEmail;
+    private String userEmail;
+    private String userPassword;
 }
