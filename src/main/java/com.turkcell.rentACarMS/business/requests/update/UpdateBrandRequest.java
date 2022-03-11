@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class UpdateBrandRequest {
     @NotNull
     @Min(0)
-    private int brandId;
+    private int id;
 
     @NotNull
     @Size(min = 2,max = 50)

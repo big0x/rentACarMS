@@ -31,6 +31,7 @@ public class CarManager implements CarService {
 
     @Override
     public DataResult<List<ListCarDto>> listAll() {
+
         List<Car> cars = this.carDao.findAll();
         if (!checkCarListEmpty(cars).isSuccess()){
             return new ErrorDataResult<List<ListCarDto>>(checkCarListEmpty(cars).getMessage());
@@ -49,22 +50,25 @@ public class CarManager implements CarService {
 
     @Override
     public Result update(UpdateCarRequest updateCarRequest) {
+        if(!checkCarId(updateCarRequest.getId()).isSuccess()){
+            return new ErrorResult(checkCarId(updateCarRequest.getId()).getMessage());
+        }
         Car car = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
-        checkCarId(updateCarRequest.getCarId());
+        //Car car1 = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
+        //Car car = carDao.findById(updateCarRequest.getCarId());
         this.carDao.save(car);
-        return new SuccessResult(updateCarRequest.getCarId() + " : Car updated.");
+        return new SuccessResult(updateCarRequest.getId() + " : Car updated.");
 
     }
 
     @Override
     public Result delete(DeleteCarRequest deleteCarRequest) {
-        if (!checkCarId(deleteCarRequest.getCarId()).isSuccess()){
-            return new ErrorDataResult<CarDto>(checkCarId(deleteCarRequest.getCarId()).getMessage());
+        if (!checkCarId(deleteCarRequest.getId()).isSuccess()){
+            return new ErrorDataResult<CarDto>(checkCarId(deleteCarRequest.getId()).getMessage());
         }
         Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
-        checkCarId(car.getId());
         this.carDao.delete(car);
-        return new SuccessResult(deleteCarRequest.getCarId() + " : Car deleted.");
+        return new SuccessResult(deleteCarRequest.getId() + " : Car deleted.");
     }
 
     @Override
@@ -104,8 +108,8 @@ public class CarManager implements CarService {
     @Override
     public DataResult<List<ListCarDto>> findByCarDailyPriceLessThanEqual(double dailyPrice) {
         List<Car> cars = this.carDao.findByCarDailyPriceLessThanEqual(dailyPrice);
-        if(cars.isEmpty()){
-            return new ErrorDataResult<List<ListCarDto>>(null,"There is no results.");
+        if(cars.isEmpty()) {
+            return new ErrorDataResult<List<ListCarDto>>(null, "There is no results.");
         }
         List<ListCarDto> listCarDto = cars.stream().map(car -> this.modelMapperService.forDto().map(car,ListCarDto.class)).collect(Collectors.toList());
         return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " Cars found.");

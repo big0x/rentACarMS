@@ -9,7 +9,7 @@ import com.turkcell.rentACarMS.business.requests.update.UpdateCustomerRequest;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarMS.core.utilities.results.*;
 import com.turkcell.rentACarMS.dataAccess.abstracts.CustomerDao;
-import com.turkcell.rentACarMS.entities.concretes.Customer;
+import com.turkcell.rentACarMS.entities.concretes.IndividualCustomer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,39 +30,43 @@ public class CustomerManager implements CustomerService {
 
     @Override
     public DataResult<List<ListCustomerDto>> listAll() {
-        List<Customer> customers =this.customerDao.findAll();
-        if(!checkCustomerListEmpty(customers).isSuccess()){
-            return new ErrorDataResult<List<ListCustomerDto>>(checkCustomerListEmpty(customers).getMessage());
+        List<IndividualCustomer> individualCustomers =this.customerDao.findAll();
+        if(!checkCustomerListEmpty(individualCustomers).isSuccess()){
+            return new ErrorDataResult<List<ListCustomerDto>>(checkCustomerListEmpty(individualCustomers).getMessage());
         }
-        List<ListCustomerDto> listCustomerDto = customers.stream().map(customer -> this.modelMapperService
-                .forDto().map(customer, ListCustomerDto.class)).collect(Collectors.toList());
+        List<ListCustomerDto> listCustomerDto = individualCustomers.stream().map(individualCustomer -> this.modelMapperService
+                .forDto().map(individualCustomer, ListCustomerDto.class)).collect(Collectors.toList());
         return new SuccessDataResult<List<ListCustomerDto>>(listCustomerDto,listCustomerDto.size() + " : Customers found.");
     }
 
     @Override
     public Result create(CreateCustomerRequest createCustomerRequest) {
-        Customer customer = this.modelMapperService.forRequest().map(createCustomerRequest, Customer.class);
-        this.customerDao.save(customer);
-        return new SuccessResult("Customer added with id: " + customer.getId());
+        if(!checkCustomerEmail(createCustomerRequest.getUserEmail()).isSuccess()){
+            return new ErrorResult(checkCustomerEmail(createCustomerRequest.getUserEmail()).getMessage());
+        }
+        IndividualCustomer individualCustomer = this.modelMapperService.forRequest().map(createCustomerRequest, IndividualCustomer.class);
+        this.customerDao.save(individualCustomer);
+        return new SuccessResult("Customer added with id: " + individualCustomer.getId());
     }
 
     @Override
     public Result update(UpdateCustomerRequest updateCustomerRequest) {
-        Customer customer = this.modelMapperService.forRequest().map(updateCustomerRequest,Customer.class);
-        checkCustomerId(updateCustomerRequest.getCustomerId());
-        this.customerDao.save(customer);
-        return new SuccessResult(updateCustomerRequest.getCustomerId() + " : Customer updated.");
+        if(!checkCustomerId(updateCustomerRequest.getId()).isSuccess()){
+            return new ErrorResult(checkCustomerId(updateCustomerRequest.getId()).getMessage());
+        }
+        IndividualCustomer individualCustomer = this.modelMapperService.forRequest().map(updateCustomerRequest, IndividualCustomer.class);
+        this.customerDao.save(individualCustomer);
+        return new SuccessResult(updateCustomerRequest.getId() + " : Customer updated.");
     }
 
     @Override
     public Result delete(DeleteCustomerRequest deleteCustomerRequest) {
-        if (!checkCustomerId(deleteCustomerRequest.getCustomerId()).isSuccess()){
-            return new ErrorDataResult<CustomerDto>(checkCustomerId(deleteCustomerRequest.getCustomerId()).getMessage());
+        if (!checkCustomerId(deleteCustomerRequest.getId()).isSuccess()){
+            return new ErrorDataResult<CustomerDto>(checkCustomerId(deleteCustomerRequest.getId()).getMessage());
         }
-        Customer customer = this.modelMapperService.forRequest().map(deleteCustomerRequest, Customer.class);
-        checkCustomerId(customer.getId());
-        this.customerDao.delete(customer);
-        return new SuccessResult(deleteCustomerRequest.getCustomerId() + " : Customer deleted.");
+        IndividualCustomer individualCustomer = this.modelMapperService.forRequest().map(deleteCustomerRequest, IndividualCustomer.class);
+        this.customerDao.delete(individualCustomer);
+        return new SuccessResult(deleteCustomerRequest.getId() + " : Customer deleted.");
     }
 
     @Override
@@ -70,8 +74,8 @@ public class CustomerManager implements CustomerService {
         if(!checkCustomerId(customerId).isSuccess()){
             return new ErrorDataResult<CustomerDto>(checkCustomerId(customerId).getMessage());
         }
-        Customer customer = this.customerDao.getById(customerId);
-        CustomerDto customerDto = this.modelMapperService.forDto().map(customer, CustomerDto.class);
+        IndividualCustomer individualCustomer = this.customerDao.getById(customerId);
+        CustomerDto customerDto = this.modelMapperService.forDto().map(individualCustomer, CustomerDto.class);
         return new SuccessDataResult<CustomerDto>(customerDto,"Customer found.");
     }
     private Result checkCustomerId(int customerId) {
@@ -80,10 +84,16 @@ public class CustomerManager implements CustomerService {
         }
         return new SuccessResult();
     }
-    private Result checkCustomerListEmpty(List<Customer> customers){
-        if (customers.isEmpty()){
-            return new ErrorDataResult<List<Customer>>("Customer list is empty.");
+    private Result checkCustomerListEmpty(List<IndividualCustomer> individualCustomers){
+        if (individualCustomers.isEmpty()){
+            return new ErrorDataResult<List<IndividualCustomer>>("Customer list is empty.");
         }
         return new SuccessDataResult<>();
+    }
+    private Result checkCustomerEmail(String email){
+        if(this.customerDao.existsByEmail(email)){
+            return new ErrorResult("This customer already exists.");
+        }
+        return new SuccessResult();
     }
 }

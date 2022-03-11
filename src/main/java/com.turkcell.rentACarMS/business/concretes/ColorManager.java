@@ -41,13 +41,10 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public Result create(CreateColorRequest createColorRequest)  {
+		if(!checkColorName(createColorRequest.getColorName()).isSuccess()){
+			return new ErrorResult(checkColorName(createColorRequest.getColorName()).getMessage());
+		}
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
-//		Result result = checkColorName(color);
-//		if(!result.isSuccess()){
-//			return new ErrorResult(result.getMessage());
-//		}
-		checkColorName(color);
-
 		this.colorDao.save(color);
 		return new SuccessResult("Color added : " + color.getColorName());
 
@@ -55,22 +52,22 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public Result update(UpdateColorRequest updateColorRequest) {
+		if(!checkColorId(updateColorRequest.getId()).isSuccess()){
+			return new ErrorResult(checkColorName(updateColorRequest.getColorName()).getMessage());
+		}
 		Color color = this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
-		checkColorId(updateColorRequest.getColorId());
 		this.colorDao.save(color);
-		return new SuccessResult(updateColorRequest.getColorId() + " : Color updated.");
-
+		return new SuccessResult(updateColorRequest.getId() + " : Color updated.");
 	}
 
 	@Override
 	public Result delete(DeleteColorRequest deleteColorRequest) {
-		if (!checkColorId(deleteColorRequest.getColorId()).isSuccess()){
-			return new ErrorDataResult<ColorDto>(checkColorId(deleteColorRequest.getColorId()).getMessage());
+		if (!checkColorId(deleteColorRequest.getId()).isSuccess()){
+			return new ErrorDataResult<ColorDto>(checkColorId(deleteColorRequest.getId()).getMessage());
 		}
 		Color color = this.modelMapperService.forRequest().map(deleteColorRequest,Color.class);
-		checkColorId(color.getId());
 		this.colorDao.delete(color);
-		return new SuccessResult(deleteColorRequest.getColorId() + " : Color deleted.");
+		return new SuccessResult(deleteColorRequest.getId() + " : Color deleted.");
 
 	}
 
@@ -84,8 +81,8 @@ public class ColorManager implements ColorService {
 		return new SuccessDataResult<ColorDto>(colorDto,"Color found.");
 	}
 
-	private Result checkColorName(Color color) {
-		if (this.colorDao.existsByColorName(color.getColorName())) {
+	private Result checkColorName(String brandName) {
+		if (this.colorDao.existsByColorName(brandName)) {
 			return new ErrorResult("This color already exists.");
 		}
 		return new SuccessResult();

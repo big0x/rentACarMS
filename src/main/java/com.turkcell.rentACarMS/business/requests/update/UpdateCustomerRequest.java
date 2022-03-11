@@ -13,7 +13,7 @@ public class UpdateCustomerRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int customerId;
+    private int id;
     @NotNull
     @Size(min = 0,max = 250)
     private String customerFirstName;

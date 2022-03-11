@@ -12,7 +12,7 @@ public class CarDto {
     private String colorName;
     private double carDailyPrice;
     private int carModelYear;
-    private String description;
-    private boolean isActive;
+    private String carDescription;
+
 
 }

@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class UpdateColorRequest {
     @NotNull
     @Min(0)
-    private int colorId;
+    private int id;
     @NotNull
     @Size(min = 2,max = 50)
     private String colorName;

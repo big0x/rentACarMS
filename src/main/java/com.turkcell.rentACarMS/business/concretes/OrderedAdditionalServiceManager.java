@@ -50,6 +50,9 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 
     @Override
     public Result create(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest) {
+        if(!additionalServiceDao.existsById(createOrderedAdditionalServiceRequest.getAdditionalServiceId()) || !rentalDao.existsById(createOrderedAdditionalServiceRequest.getRentalId())){
+            return new ErrorResult("Additional Service or Rental not found.");
+        }
         OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().map(createOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.save(orderedAdditionalService);
         return new SuccessResult("Ordered Additional Service added with id: " + orderedAdditionalService.getId());
@@ -57,21 +60,23 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 
     @Override
     public Result update(UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) {
-        OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().map(updateOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
-        checkOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId());
+        if(!checkOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getId()).isSuccess()){
+            return new ErrorResult(checkOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getId()).getMessage());
+        }
+        OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().
+                map(updateOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.save(orderedAdditionalService);
-        return new SuccessResult(updateOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId() + " : Ordered Additional Service updated.");
+        return new SuccessResult(updateOrderedAdditionalServiceRequest.getId() + " : Ordered Additional Service updated.");
     }
 
     @Override
     public Result delete(DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest) {
-        if(!checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId()).isSuccess()){
-            return new ErrorDataResult<OrderedAdditionalServiceDto>(checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId()).getMessage());
+        if(!checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getId()).isSuccess()){
+            return new ErrorDataResult<OrderedAdditionalServiceDto>(checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getId()).getMessage());
         }
         OrderedAdditionalService orderedAdditionalService = this.modelMapperService.forRequest().map(deleteOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
-        checkOrderedAdditionalServiceId(orderedAdditionalService.getId());
         this.orderedAdditionalServiceDao.delete(orderedAdditionalService);
-        return new SuccessResult(deleteOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId() + " : Ordered Additional Service deleted.");
+        return new SuccessResult(deleteOrderedAdditionalServiceRequest.getId() + " : Ordered Additional Service deleted.");
     }
 
     @Override
@@ -83,7 +88,6 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
         OrderedAdditionalServiceDto orderedAdditionalServiceDto = this.modelMapperService.forDto().map(orderedAdditionalService,OrderedAdditionalServiceDto.class);
         return new SuccessDataResult<OrderedAdditionalServiceDto>(orderedAdditionalServiceDto,"Ordered Additional Service found.");
     }
-
 
     private Result checkOrderedAdditionalServiceId(int orderedAdditionalServiceId) {
         if (!this.orderedAdditionalServiceDao.existsById(orderedAdditionalServiceId)) {

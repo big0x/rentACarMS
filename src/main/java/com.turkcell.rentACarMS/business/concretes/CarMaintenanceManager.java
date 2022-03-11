@@ -44,32 +44,33 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 
     @Override
     public Result create(CreateCarMaintenanceRequest createCarMaintenanceRequest) {
-        CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest, CarMaintenance.class);
-        Car car = this.carDao.findById(createCarMaintenanceRequest.getCarId());
-        if(checkIfCarActive(car.getId()).isSuccess()){
-            car.setCarStates(CarStates.IN_MAINTENANCE);
-            this.carDao.save(car);
-            this.carMaintenanceDao.save(carMaintenance);
-            return new SuccessResult("Car maintenance added with id: " + carMaintenance.getId());
+        if(!checkIfCarActive(createCarMaintenanceRequest.getCarId()).isSuccess()){
+            return new ErrorResult(checkIfCarActive(createCarMaintenanceRequest.getCarId()).getMessage());
         }
-        return new ErrorResult(checkIfCarActive(createCarMaintenanceRequest.getCarId()).getMessage());
+        CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest, CarMaintenance.class);
+        this.carMaintenanceDao.save(carMaintenance);
+        Car car = this.carDao.findById(createCarMaintenanceRequest.getCarId());
+        car.setCarStates(CarStates.IN_MAINTENANCE);
+        this.carDao.save(car);
+        return new SuccessResult("Car maintenance added with id: " + carMaintenance.getId() + car.getId());
     }
 
     @Override
     public Result update(UpdateCarMaintenanceRequest updateCarMaintenanceRequest) {
+        if(!checkCarMaintenanceId(updateCarMaintenanceRequest.getId()).isSuccess()){
+            return new ErrorResult(checkCarMaintenanceId(updateCarMaintenanceRequest.getId()).getMessage());
+        }
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(updateCarMaintenanceRequest, CarMaintenance.class);
-        checkCarMaintenanceId(updateCarMaintenanceRequest.getCarMaintenanceId());
         this.carMaintenanceDao.save(carMaintenance);
         return new SuccessResult("Car maintenance updated.");
     }
 
     @Override
     public Result delete(DeleteCarMaintenanceRequest deleteCarMaintenanceRequest) {
-        if (!checkCarMaintenanceId(deleteCarMaintenanceRequest.getCarMaintenanceId()).isSuccess()){
-            return new ErrorDataResult<CarMaintenanceDto>(checkCarMaintenanceId(deleteCarMaintenanceRequest.getCarMaintenanceId()).getMessage());
+        if (!checkCarMaintenanceId(deleteCarMaintenanceRequest.getId()).isSuccess()){
+            return new ErrorDataResult<CarMaintenanceDto>(checkCarMaintenanceId(deleteCarMaintenanceRequest.getId()).getMessage());
         }
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(deleteCarMaintenanceRequest, CarMaintenance.class);
-        checkCarMaintenanceId(carMaintenance.getId());
         this.carMaintenanceDao.delete(carMaintenance);
         return new SuccessResult("Car maintenance deleted.");
     }
@@ -100,7 +101,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
     private Result checkIfCarActive(int carId){
         Car car = this.carDao.findById(carId);
         CarStates carStates = car.getCarStates();
-        if (carStates.ordinal()==0){
+        if (carStates.name()=="AVAILABLE"){
             return new SuccessResult();
         }
         return new ErrorResult("Car is not available.");

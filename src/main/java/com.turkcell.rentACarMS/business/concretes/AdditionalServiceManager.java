@@ -43,7 +43,9 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 
         @Override
         public Result create (CreateAdditionalServiceRequest createAdditionalServiceRequest){
-            checkAdditionalServiceName(createAdditionalServiceRequest.getAdditionalServiceName());
+            if(!checkAdditionalServiceName(createAdditionalServiceRequest.getAdditionalServiceName()).isSuccess()){
+                return new ErrorResult(checkAdditionalServiceName(createAdditionalServiceRequest.getAdditionalServiceName()).getMessage());
+            }
             AdditionalService additionalService = this.modelMapperService.forRequest().map(createAdditionalServiceRequest, AdditionalService.class);
             this.additionalServiceDao.save(additionalService);
             return new SuccessResult("Additional Service added : " + additionalService.getAdditionalServiceName());
@@ -51,16 +53,18 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 
         @Override
         public Result update (UpdateAdditionalServiceRequest updateAdditionalServiceRequest){
+            if(!checkAdditionalServiceId(updateAdditionalServiceRequest.getId()).isSuccess()){
+                return new ErrorResult(checkAdditionalServiceId(updateAdditionalServiceRequest.getId()).getMessage());
+            }
             AdditionalService additionalService = this.modelMapperService.forRequest().map(updateAdditionalServiceRequest, AdditionalService.class);
-            checkAdditionalServiceId(updateAdditionalServiceRequest.getAdditionalServiceId());
             this.additionalServiceDao.save(additionalService);
             return new SuccessResult("Additional Service updated.");
         }
 
         @Override
         public Result delete (DeleteAdditionalServiceRequest deleteAdditionalServiceRequest){
-            if (!checkAdditionalServiceId(deleteAdditionalServiceRequest.getAdditionalServiceId()).isSuccess()){
-                return new ErrorDataResult<AdditionalServiceDto>(checkAdditionalServiceId(deleteAdditionalServiceRequest.getAdditionalServiceId()).getMessage());
+            if (!checkAdditionalServiceId(deleteAdditionalServiceRequest.getId()).isSuccess()){
+                return new ErrorDataResult<AdditionalServiceDto>(checkAdditionalServiceId(deleteAdditionalServiceRequest.getId()).getMessage());
             }
             AdditionalService additionalService = this.modelMapperService.forRequest().map(deleteAdditionalServiceRequest, AdditionalService.class);
             checkAdditionalServiceId(additionalService.getId());

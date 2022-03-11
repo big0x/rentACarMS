@@ -10,10 +10,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarMaintenanceDto {
-    private int carMaintenanceId;
-    private int carId;
     private String carMaintenanceDescription;
     private LocalDate carMaintenanceReturnDate;
-    private boolean carIsActive;
+    private int carId;
+
 
 }

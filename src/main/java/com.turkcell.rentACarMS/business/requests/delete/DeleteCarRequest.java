@@ -15,5 +15,5 @@ public class DeleteCarRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int carId;
+    private int id;
 }

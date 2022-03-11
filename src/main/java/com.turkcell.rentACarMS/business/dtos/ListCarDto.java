@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListCarDto {
 
-    private int carId;
+    private int id;
     private String brandName;
     private String colorName;
     private double carDailyPrice;

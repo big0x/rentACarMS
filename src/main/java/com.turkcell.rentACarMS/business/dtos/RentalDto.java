@@ -14,6 +14,5 @@ public class RentalDto {
     private int carId;
     private LocalDate rentalRentDate;
     private LocalDate rentalReturnDate;
-    private boolean carIsActive;
 
 }

@@ -16,7 +16,7 @@ public class UpdateCarMaintenanceRequest {
 
     @NotNull
     @Min(0)
-    private int carMaintenanceId;
+    private int id;
 
     @NotNull
     @Size(min = 2,max = 250)

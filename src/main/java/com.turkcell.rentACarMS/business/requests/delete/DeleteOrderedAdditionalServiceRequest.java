@@ -11,5 +11,5 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class DeleteOrderedAdditionalServiceRequest {
     @NotNull
-    private int orderedAdditionalServiceId;
+    private int id;
 }

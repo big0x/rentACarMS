@@ -28,6 +28,13 @@ public class Car {
     @Column(name="car_description")
     private String carDescription;
 
+    @Column(name="state")
+    private CarStates carStates;
+
+    @ManyToOne
+    @JoinColumn(name = "current_city_id")
+    private City currentCity;
+
     @ManyToOne
     @JoinColumn(name="brand_id")
     private Brand brand;
@@ -36,10 +43,7 @@ public class Car {
     @JoinColumn(name="color_id")
     private Color color;
 
-    @Column(name="state")
-    private CarStates carStates;
-
-    @OneToMany(mappedBy = "car")
+    @OneToMany(mappedBy = "car",fetch = FetchType.LAZY)
     private List<CarMaintenance> carMaintenances;
 
     @OneToMany(mappedBy = "car")

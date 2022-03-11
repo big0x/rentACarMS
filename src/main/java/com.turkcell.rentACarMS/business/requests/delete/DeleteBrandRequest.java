@@ -15,5 +15,5 @@ public class DeleteBrandRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int brandId;
+    private int id;
 }

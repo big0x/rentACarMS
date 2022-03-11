@@ -15,7 +15,7 @@ public class UpdateAdditionalServiceRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int additionalServiceId;
+    private int id;
     @NotNull
     @Size(min = 2,max = 50)
     private String additionalServiceName;

@@ -1,5 +1,6 @@
 package com.turkcell.rentACarMS.business.requests.update;
 
+import com.turkcell.rentACarMS.entities.enums.CarStates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class UpdateCarRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int carId;
+    private int id;
     @Min(0)
     @Max(100)
     private double carDailyPrice;
@@ -26,9 +27,11 @@ public class UpdateCarRequest {
     private int carModelYear;
     @NotNull
     @Size(min = 0,max = 250)
-    private String description;
+    private String carDescription;
     @NotNull
     private int brandId;
     @NotNull
     private int colorId;
+    @NotNull
+    private CarStates carStates;
 }

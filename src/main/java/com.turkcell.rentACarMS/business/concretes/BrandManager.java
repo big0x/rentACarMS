@@ -52,8 +52,8 @@ public class BrandManager implements BrandService {
 	}
 	@Override
 	public Result delete(DeleteBrandRequest deleteBrandRequest) {
-		if (!checkBrandId(deleteBrandRequest.getBrandId()).isSuccess()){
-			return new ErrorResult(checkBrandId(deleteBrandRequest.getBrandId()).getMessage());
+		if (!checkBrandId(deleteBrandRequest.getId()).isSuccess()){
+			return new ErrorResult(checkBrandId(deleteBrandRequest.getId()).getMessage());
 		}
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
 		checkBrandId(brand.getId());
@@ -62,7 +62,7 @@ public class BrandManager implements BrandService {
 	}
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) {
-		if(!checkBrandId(updateBrandRequest.getBrandId()).isSuccess()){
+		if(!checkBrandId(updateBrandRequest.getId()).isSuccess()){
 			return new ErrorResult(checkBrandName(updateBrandRequest.getBrandName()).getMessage());
 		}
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);

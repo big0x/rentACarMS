@@ -15,5 +15,5 @@ public class DeleteCarMaintenanceRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int carMaintenanceId;
+    private int id;
 }

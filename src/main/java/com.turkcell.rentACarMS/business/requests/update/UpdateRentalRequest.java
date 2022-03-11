@@ -14,7 +14,7 @@ public class UpdateRentalRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int rentalId;
+    private int id;
 
     @FutureOrPresent
     private LocalDate rentDate;
@@ -26,5 +26,4 @@ public class UpdateRentalRequest {
     @NotNull
     private int customerId;
 
-    private int additionalServiceId;
 }

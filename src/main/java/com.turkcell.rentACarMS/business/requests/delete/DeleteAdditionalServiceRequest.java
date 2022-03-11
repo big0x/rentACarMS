@@ -14,5 +14,5 @@ public class DeleteAdditionalServiceRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int additionalServiceId;
+    private int id;
 }

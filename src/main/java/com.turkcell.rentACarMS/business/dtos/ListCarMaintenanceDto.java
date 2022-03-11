@@ -10,11 +10,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListCarMaintenanceDto {
-    private int maintenanceId;
+    private int id;
     private int carId;
     private String brandName;
     private String colorName;
     private String carMaintenanceDescription;
     private LocalDate carMaintenanceReturnDate;
-    private boolean carIsActive;
 }

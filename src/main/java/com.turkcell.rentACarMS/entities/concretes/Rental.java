@@ -18,16 +18,36 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
+
     @Column(name="rental_rent_date")
     private LocalDate rentalRentDate;
+
     @Column(name="rental_return_date")
     private LocalDate rentalReturnDate;
+
+    @Column(name="rental_price")
+    private double rentalPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "rental_city_id",referencedColumnName = "id")
+    private City rentalCity;
+
+    @ManyToOne
+    @JoinColumn(name = "return_city_id",referencedColumnName = "id")
+    private City returnCity;
+
     @ManyToOne
     @JoinColumn(name="car_id",referencedColumnName = "id")
     private Car car;
+
+    @ManyToOne
+    @JoinColumn(name="city_id",referencedColumnName = "id")
+    private City city;
+
     @ManyToOne
     @JoinColumn(name="customer_id",referencedColumnName = "id")
     private Customer customer;
+
     @OneToMany(mappedBy = "rental")
     private List<OrderedAdditionalService> orderedAdditionalService;
 }
