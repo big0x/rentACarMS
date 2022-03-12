@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.ListColorDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateColorRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteColorRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateColorRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarMS.core.utilities.results.*;
 import com.turkcell.rentACarMS.dataAccess.abstracts.ColorDao;
@@ -30,76 +31,73 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public DataResult<List<ListColorDto>> listAll() {
+
 		List<Color> colors = this.colorDao.findAll();
-		if (!checkColorListEmpty(colors).isSuccess()){
-			return new ErrorDataResult<List<ListColorDto>>(checkColorListEmpty(colors).getMessage());
-		}
-		List<ListColorDto> listColorDto = colors.stream().map(color -> this.modelMapperService
-				.forDto().map(color, ListColorDto.class)).collect(Collectors.toList());
+		List<ListColorDto> listColorDto = colors.stream().map(color -> this.modelMapperService.forDto().map(color, ListColorDto.class)).collect(Collectors.toList());
+
 		return new SuccessDataResult<List<ListColorDto>>(listColorDto,listColorDto.size()+" : Colors found.");
 	}
 
 	@Override
-	public Result create(CreateColorRequest createColorRequest)  {
-		if(!checkColorName(createColorRequest.getColorName()).isSuccess()){
-			return new ErrorResult(checkColorName(createColorRequest.getColorName()).getMessage());
-		}
+	public Result create(CreateColorRequest createColorRequest) throws BusinessException {
+
+		checkColorName(createColorRequest.getColorName());
+
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		this.colorDao.save(color);
+
 		return new SuccessResult("Color added : " + color.getColorName());
 
 	}
 
 	@Override
-	public Result update(UpdateColorRequest updateColorRequest) {
-		if(!checkColorId(updateColorRequest.getId()).isSuccess()){
-			return new ErrorResult(checkColorName(updateColorRequest.getColorName()).getMessage());
-		}
+	public Result update(UpdateColorRequest updateColorRequest) throws BusinessException {
+
+		checkColorId(updateColorRequest.getId());
+
 		Color color = this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
 		this.colorDao.save(color);
+
 		return new SuccessResult(updateColorRequest.getId() + " : Color updated.");
 	}
 
 	@Override
-	public Result delete(DeleteColorRequest deleteColorRequest) {
-		if (!checkColorId(deleteColorRequest.getId()).isSuccess()){
-			return new ErrorDataResult<ColorDto>(checkColorId(deleteColorRequest.getId()).getMessage());
-		}
+	public Result delete(DeleteColorRequest deleteColorRequest) throws BusinessException {
+
+		checkColorId(deleteColorRequest.getId());
+
 		Color color = this.modelMapperService.forRequest().map(deleteColorRequest,Color.class);
 		this.colorDao.delete(color);
+
 		return new SuccessResult(deleteColorRequest.getId() + " : Color deleted.");
 
 	}
 
 	@Override
-	public DataResult<ColorDto> getById(int colorId) {
-		if(!checkColorId(colorId).isSuccess()){
-			return new ErrorDataResult<ColorDto>(checkColorId(colorId).getMessage());
-		}
+	public DataResult<ColorDto> getById(int colorId) throws BusinessException {
+
+		checkColorId(colorId);
+
 		Color color = this.colorDao.getById(colorId);
 		ColorDto colorDto = this.modelMapperService.forDto().map(color, ColorDto.class);
+
 		return new SuccessDataResult<ColorDto>(colorDto,"Color found.");
 	}
 
-	private Result checkColorName(String brandName) {
+	private Result checkColorName(String brandName) throws BusinessException {
+
 		if (this.colorDao.existsByColorName(brandName)) {
-			return new ErrorResult("This color already exists.");
+			throw new BusinessException("This color already exists.");
 		}
 		return new SuccessResult();
 	}
 
-	private Result checkColorId(int colorId)  {
+	private Result checkColorId(int colorId) throws BusinessException {
+
 		if (!this.colorDao.existsById(colorId)) {
-			return new ErrorResult("Color id could not be defined.");
+			throw new BusinessException("Color id could not be defined.");
 		}
 		return new SuccessResult();
-
-	}
-	private Result checkColorListEmpty(List<Color> colors){
-		if(colors.isEmpty()){
-			return new ErrorDataResult<List<Color>>("Color list is empty.");
-		}
-		return new SuccessDataResult<>();
 
 	}
 }

@@ -14,7 +14,5 @@ public class CreateOrderedAdditionalServiceRequest {
     @ReadOnlyProperty
     private int id;
     @NotNull
-    private int rentalId;
-    @NotNull
     private int additionalServiceId;
 }

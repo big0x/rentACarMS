@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.ListCarDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateCarRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteCarRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateCarRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.results.DataResult;
 import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,24 +26,24 @@ public class CarsController {
     }
 
     @GetMapping("/listallcars")
-    public DataResult<List<ListCarDto>> listAll() {
+    public DataResult<List<ListCarDto>> listAll() throws BusinessException {
         return this.carService.listAll();
     }
     @PostMapping("/createcar")
-    public Result create(@RequestBody @Valid CreateCarRequest createCarRequest){
+    public Result create(@RequestBody @Valid CreateCarRequest createCarRequest) throws BusinessException {
         return this.carService.create(createCarRequest);
     }
     @DeleteMapping("/deletecar")
-    public Result delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest){
+    public Result delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest) throws BusinessException {
         return this.carService.delete(deleteCarRequest);
     }
     @PutMapping("/updatecar")
-    public Result update(@RequestBody @Valid UpdateCarRequest updateCarRequest){
+    public Result update(@RequestBody @Valid UpdateCarRequest updateCarRequest) throws BusinessException {
         return this.carService.update(updateCarRequest);
     }
 
     @GetMapping("/getbycarid")
-    public DataResult<CarDto> getById(@RequestParam int carId){
+    public DataResult<CarDto> getById(@RequestParam int carId) throws BusinessException {
         return this.carService.getById(carId);
     }
     @GetMapping("/getallpaged")

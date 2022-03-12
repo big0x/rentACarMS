@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.ListCarMaintenanceDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateCarMaintenanceRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteCarMaintenanceRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateCarMaintenanceRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarMS.core.utilities.results.*;
 import com.turkcell.rentACarMS.dataAccess.abstracts.CarDao;
@@ -34,76 +35,83 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 
     @Override
     public DataResult<List<ListCarMaintenanceDto>> listAll() {
+
         List<CarMaintenance> carMaintenances = this.carMaintenanceDao.findAll();
-        if(!checkCarMaintenanceListEmpty(carMaintenances).isSuccess()){
-            return new ErrorDataResult<List<ListCarMaintenanceDto>>(checkCarMaintenanceListEmpty(carMaintenances).getMessage());
-        }
         List<ListCarMaintenanceDto> listCarMaintenanceDto = carMaintenances.stream().map(carMaintenance -> this.modelMapperService.forDto().map(carMaintenance, ListCarMaintenanceDto.class)).collect(Collectors.toList());
+
         return new SuccessDataResult<List<ListCarMaintenanceDto>>(listCarMaintenanceDto,listCarMaintenanceDto.size()+" : Car maintenance found.");
     }
 
     @Override
-    public Result create(CreateCarMaintenanceRequest createCarMaintenanceRequest) {
-        if(!checkIfCarActive(createCarMaintenanceRequest.getCarId()).isSuccess()){
-            return new ErrorResult(checkIfCarActive(createCarMaintenanceRequest.getCarId()).getMessage());
-        }
+    public Result create(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
+
+        checkCarId(createCarMaintenanceRequest.getCarId());
+        checkIfCarActive(createCarMaintenanceRequest.getCarId());
+
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest, CarMaintenance.class);
-        this.carMaintenanceDao.save(carMaintenance);
         Car car = this.carDao.findById(createCarMaintenanceRequest.getCarId());
         car.setCarStates(CarStates.IN_MAINTENANCE);
+        this.carMaintenanceDao.save(carMaintenance);
         this.carDao.save(car);
-        return new SuccessResult("Car maintenance added with id: " + carMaintenance.getId() + car.getId());
+
+        return new SuccessResult("Car maintenance added with id: " + carMaintenance.getId());
     }
 
     @Override
-    public Result update(UpdateCarMaintenanceRequest updateCarMaintenanceRequest) {
-        if(!checkCarMaintenanceId(updateCarMaintenanceRequest.getId()).isSuccess()){
-            return new ErrorResult(checkCarMaintenanceId(updateCarMaintenanceRequest.getId()).getMessage());
-        }
+    public Result update(UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException {
+
+        checkCarMaintenanceId(updateCarMaintenanceRequest.getId());
+
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(updateCarMaintenanceRequest, CarMaintenance.class);
         this.carMaintenanceDao.save(carMaintenance);
+
         return new SuccessResult("Car maintenance updated.");
     }
 
     @Override
-    public Result delete(DeleteCarMaintenanceRequest deleteCarMaintenanceRequest) {
-        if (!checkCarMaintenanceId(deleteCarMaintenanceRequest.getId()).isSuccess()){
-            return new ErrorDataResult<CarMaintenanceDto>(checkCarMaintenanceId(deleteCarMaintenanceRequest.getId()).getMessage());
-        }
+    public Result delete(DeleteCarMaintenanceRequest deleteCarMaintenanceRequest) throws BusinessException {
+
+        checkCarMaintenanceId(deleteCarMaintenanceRequest.getId());
+
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(deleteCarMaintenanceRequest, CarMaintenance.class);
         this.carMaintenanceDao.delete(carMaintenance);
+
         return new SuccessResult("Car maintenance deleted.");
     }
 
     @Override
-    public DataResult<CarMaintenanceDto> getById(int carMaintenanceId) {
-        if(!checkCarMaintenanceId(carMaintenanceId).isSuccess()){
-            return new ErrorDataResult<CarMaintenanceDto>(checkCarMaintenanceId(carMaintenanceId).getMessage());
-        }
+    public DataResult<CarMaintenanceDto> getById(int carMaintenanceId) throws BusinessException {
+
+        checkCarMaintenanceId(carMaintenanceId);
+
         CarMaintenance carMaintenance = this.carMaintenanceDao.getById(carMaintenanceId);
         CarMaintenanceDto carMaintenanceDto = this.modelMapperService.forDto().map(carMaintenance, CarMaintenanceDto.class);
+
         return new SuccessDataResult<CarMaintenanceDto>(carMaintenanceDto,"Car maintenance found.");
     }
+    private Result checkCarId(int carId) throws BusinessException{
 
-    private Result checkCarMaintenanceId(int carMaintenanceId) {
-        if (!this.carMaintenanceDao.existsById(carMaintenanceId)){
-            return new ErrorResult("Car maintenance not found.");
+        if(!this.carDao.existsById(carId)){
+            throw new BusinessException("Car not found.");
         }
         return new SuccessResult();
     }
-    private Result checkCarMaintenanceListEmpty(List<CarMaintenance> carMaintenances){
-        if(carMaintenances.isEmpty()){
-            return new ErrorDataResult<List<CarMaintenance>>("Car maintenance list is empty.");
-        }
-        return new SuccessDataResult<>();
 
+    private Result checkCarMaintenanceId(int carMaintenanceId) throws BusinessException {
+
+        if (!this.carMaintenanceDao.existsById(carMaintenanceId)){
+            throw new BusinessException("Car maintenance not found.");
+        }
+        return new SuccessResult();
     }
-    private Result checkIfCarActive(int carId){
+    private Result checkIfCarActive(int carId) throws BusinessException {
+
         Car car = this.carDao.findById(carId);
         CarStates carStates = car.getCarStates();
+
         if (carStates.name()=="AVAILABLE"){
             return new SuccessResult();
         }
-        return new ErrorResult("Car is not available.");
+        throw new BusinessException("Car is not available.");
     }
 }

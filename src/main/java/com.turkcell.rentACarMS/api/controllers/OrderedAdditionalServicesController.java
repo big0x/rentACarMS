@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.OrderedAdditionalServiceDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateOrderedAdditionalServiceRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteOrderedAdditionalServiceRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateOrderedAdditionalServiceRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.results.DataResult;
 import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.web.bind.annotation.*;
@@ -22,24 +23,24 @@ public class OrderedAdditionalServicesController {
         this.orderedAdditionalServiceService = orderedAdditionalServiceService;
     }
     @GetMapping("/listallorderedadditionalservices")
-    public DataResult<List<ListOrderedAdditionalServiceDto>> listAll() {
+    public DataResult<List<ListOrderedAdditionalServiceDto>> listAll() throws BusinessException {
         return this.orderedAdditionalServiceService.listAll();
     }
     @PostMapping("/createorderedadditionalservice")
-    public Result create(@RequestBody @Valid CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest){
+    public Result create(@RequestBody @Valid CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest) throws BusinessException {
         return this.orderedAdditionalServiceService.create(createOrderedAdditionalServiceRequest);
     }
     @DeleteMapping("/deleteorderedadditionalservice")
-    public Result delete(@RequestBody @Valid DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest){
+    public Result delete(@RequestBody @Valid DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest) throws BusinessException {
         return this.orderedAdditionalServiceService.delete(deleteOrderedAdditionalServiceRequest);
     }
     @PutMapping("/updateorderedadditionalservice")
-    public Result update(@RequestBody @Valid UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest){
+    public Result update(@RequestBody @Valid UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException {
         return this.orderedAdditionalServiceService.update(updateOrderedAdditionalServiceRequest);
     }
 
     @GetMapping("/getbyorderedadditionalserviceid")
-    public DataResult<OrderedAdditionalServiceDto> getById(@RequestParam int orderedAdditionalServiceId){
+    public DataResult<OrderedAdditionalServiceDto> getById(@RequestParam int orderedAdditionalServiceId) throws BusinessException {
         return this.orderedAdditionalServiceService.getById(orderedAdditionalServiceId);
     }
 }

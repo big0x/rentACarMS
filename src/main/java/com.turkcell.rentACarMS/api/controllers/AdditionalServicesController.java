@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.ListAdditionalServiceDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateAdditionalServiceRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteAdditionalServiceRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateAdditionalServiceRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.results.DataResult;
 import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,24 +26,24 @@ public class AdditionalServicesController {
     }
 
     @GetMapping("/listalladditionalservices")
-    public DataResult<List<ListAdditionalServiceDto>> listAll() {
+    public DataResult<List<ListAdditionalServiceDto>> listAll() throws BusinessException {
         return this.additionalServiceService.listAll();
     }
     @PostMapping("/createadditionalservice")
-    public Result create(@RequestBody @Valid CreateAdditionalServiceRequest createAdditionalServiceRequest){
+    public Result create(@RequestBody @Valid CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException {
         return this.additionalServiceService.create(createAdditionalServiceRequest);
     }
     @DeleteMapping("/deleteadditionalservice")
-    public Result delete(@RequestBody @Valid DeleteAdditionalServiceRequest deleteAdditionalServiceRequest){
+    public Result delete(@RequestBody @Valid DeleteAdditionalServiceRequest deleteAdditionalServiceRequest) throws BusinessException {
         return this.additionalServiceService.delete(deleteAdditionalServiceRequest);
     }
     @PutMapping("/updateadditionalservice")
-    public Result update(@RequestBody @Valid UpdateAdditionalServiceRequest updateAdditionalServiceRequest){
+    public Result update(@RequestBody @Valid UpdateAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException {
         return this.additionalServiceService.update(updateAdditionalServiceRequest);
     }
 
     @GetMapping("/getbyadditionalserviceid")
-    public DataResult<AdditionalServiceDto> getById(@RequestParam int additionalServiceId){
+    public DataResult<AdditionalServiceDto> getById(@RequestParam int additionalServiceId) throws BusinessException {
         return this.additionalServiceService.getById(additionalServiceId);
     }
 }

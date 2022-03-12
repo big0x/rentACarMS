@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.OrderedAdditionalServiceDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateOrderedAdditionalServiceRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteOrderedAdditionalServiceRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateOrderedAdditionalServiceRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarMS.core.utilities.results.*;
 import com.turkcell.rentACarMS.dataAccess.abstracts.AdditionalServiceDao;
@@ -21,14 +22,14 @@ import java.util.stream.Collectors;
 @Service
 public class OrderedAdditionalServiceManager implements OrderedAdditionalServiceService {
 
-
     private OrderedAdditionalServiceDao orderedAdditionalServiceDao;
     private ModelMapperService modelMapperService;
     private RentalDao rentalDao;
     private AdditionalServiceDao additionalServiceDao;
+
     @Autowired
-    public OrderedAdditionalServiceManager (OrderedAdditionalServiceDao orderedAdditionalServiceDao,ModelMapperService modelMapperService,
-                                            RentalDao rentalDao,AdditionalServiceDao additionalServiceDao){
+    public OrderedAdditionalServiceManager (OrderedAdditionalServiceDao orderedAdditionalServiceDao,ModelMapperService modelMapperService, RentalDao rentalDao,AdditionalServiceDao additionalServiceDao){
+
         this.orderedAdditionalServiceDao = orderedAdditionalServiceDao;
         this.modelMapperService = modelMapperService;
         this.rentalDao = rentalDao;
@@ -37,68 +38,59 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 
     @Override
     public DataResult<List<ListOrderedAdditionalServiceDto>> listAll() {
+
         List<OrderedAdditionalService> orderedAdditionalServices = this.orderedAdditionalServiceDao.findAll();
-        if(!checkOrderedAdditionalServiceListEmpty(orderedAdditionalServices).isSuccess()){
-            return new ErrorDataResult<List<ListOrderedAdditionalServiceDto>>(checkOrderedAdditionalServiceListEmpty(orderedAdditionalServices).getMessage());
+        List<ListOrderedAdditionalServiceDto> listOrderedAdditionalServiceDto = orderedAdditionalServices.stream().map(orderedAdditionalService -> this.modelMapperService.forDto().map(orderedAdditionalService,ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
 
-        }
-        List<ListOrderedAdditionalServiceDto> listOrderedAdditionalServiceDto = orderedAdditionalServices.stream().map(orderedAdditionalService -> this.modelMapperService
-                .forDto().map(orderedAdditionalService,ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
         return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(listOrderedAdditionalServiceDto,listOrderedAdditionalServiceDto.size() + " : Ordered Additional Services found.");
-
     }
 
     @Override
-    public Result create(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest) {
-        if(!additionalServiceDao.existsById(createOrderedAdditionalServiceRequest.getAdditionalServiceId()) || !rentalDao.existsById(createOrderedAdditionalServiceRequest.getRentalId())){
-            return new ErrorResult("Additional Service or Rental not found.");
-        }
+    public Result create(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest) throws BusinessException {
+
         OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().map(createOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.save(orderedAdditionalService);
+
         return new SuccessResult("Ordered Additional Service added with id: " + orderedAdditionalService.getId());
     }
 
     @Override
-    public Result update(UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) {
-        if(!checkOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getId()).isSuccess()){
-            return new ErrorResult(checkOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getId()).getMessage());
-        }
-        OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().
-                map(updateOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
+    public Result update(UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException {
+
+        checkOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getId());
+
+        OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().map(updateOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.save(orderedAdditionalService);
+
         return new SuccessResult(updateOrderedAdditionalServiceRequest.getId() + " : Ordered Additional Service updated.");
     }
 
     @Override
-    public Result delete(DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest) {
-        if(!checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getId()).isSuccess()){
-            return new ErrorDataResult<OrderedAdditionalServiceDto>(checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getId()).getMessage());
-        }
+    public Result delete(DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest) throws BusinessException {
+
+        checkOrderedAdditionalServiceId(deleteOrderedAdditionalServiceRequest.getId());
+
         OrderedAdditionalService orderedAdditionalService = this.modelMapperService.forRequest().map(deleteOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.delete(orderedAdditionalService);
+
         return new SuccessResult(deleteOrderedAdditionalServiceRequest.getId() + " : Ordered Additional Service deleted.");
     }
 
     @Override
-    public DataResult<OrderedAdditionalServiceDto> getById(int orderedAdditionalServiceId) {
-        if(!checkOrderedAdditionalServiceId(orderedAdditionalServiceId).isSuccess()){
-            return new ErrorDataResult<OrderedAdditionalServiceDto>(checkOrderedAdditionalServiceId(orderedAdditionalServiceId).getMessage());
-        }
+    public DataResult<OrderedAdditionalServiceDto> getById(int orderedAdditionalServiceId) throws BusinessException {
+
+        checkOrderedAdditionalServiceId(orderedAdditionalServiceId);
+
         OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceDao.getById(orderedAdditionalServiceId);
         OrderedAdditionalServiceDto orderedAdditionalServiceDto = this.modelMapperService.forDto().map(orderedAdditionalService,OrderedAdditionalServiceDto.class);
+
         return new SuccessDataResult<OrderedAdditionalServiceDto>(orderedAdditionalServiceDto,"Ordered Additional Service found.");
     }
 
-    private Result checkOrderedAdditionalServiceId(int orderedAdditionalServiceId) {
+    private Result checkOrderedAdditionalServiceId(int orderedAdditionalServiceId) throws BusinessException {
         if (!this.orderedAdditionalServiceDao.existsById(orderedAdditionalServiceId)) {
-            return new ErrorResult("Ordered Additional Service not found.");
+            throw new BusinessException("Ordered Additional Service not found.");
         }
         return new SuccessResult();
-    }
-    private Result checkOrderedAdditionalServiceListEmpty(List<OrderedAdditionalService> orderedAdditionalServices){
-        if (orderedAdditionalServices.isEmpty()){
-            return new ErrorDataResult<List<OrderedAdditionalService>>("Ordered Additional Service list is empty.");
-        }
-        return new SuccessDataResult<>();
     }
 }

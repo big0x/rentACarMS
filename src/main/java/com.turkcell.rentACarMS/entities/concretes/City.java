@@ -17,16 +17,17 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
+
     @Column(name="city_name")
     private String cityName;
 
-    @OneToMany(mappedBy = "currentCity")
-    private List<Car> carsCurrentCity;
+    @OneToMany(mappedBy = "city",fetch = FetchType.LAZY)
+    private List<Car> cars;
 
-    @OneToMany(mappedBy = "returnCity")
+    @OneToMany(mappedBy = "returnCity",fetch = FetchType.LAZY)
     private List<Rental> rentalCarsReturnCity;
 
-    @OneToMany(mappedBy = "city")
+    @OneToMany(mappedBy = "city",fetch = FetchType.LAZY)
     private List<Rental> rentals;
 }
 

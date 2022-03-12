@@ -18,7 +18,7 @@ public class Customer extends User{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Rental> rentals;
 

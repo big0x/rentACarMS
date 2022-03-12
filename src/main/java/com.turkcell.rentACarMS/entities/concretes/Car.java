@@ -32,22 +32,21 @@ public class Car {
     private CarStates carStates;
 
     @ManyToOne
-    @JoinColumn(name = "current_city_id")
-    private City currentCity;
+    @JoinColumn(name = "city_id",referencedColumnName = "id")
+    private City city;
 
     @ManyToOne
-    @JoinColumn(name="brand_id")
+    @JoinColumn(name="brand_id",referencedColumnName = "id")
     private Brand brand;
 
     @ManyToOne
-    @JoinColumn(name="color_id")
+    @JoinColumn(name="color_id",referencedColumnName = "id")
     private Color color;
 
     @OneToMany(mappedBy = "car",fetch = FetchType.LAZY)
     private List<CarMaintenance> carMaintenances;
 
-    @OneToMany(mappedBy = "car")
+    @OneToMany(mappedBy = "car",fetch = FetchType.LAZY)
     private List<Rental> rentals;
-
 
 }

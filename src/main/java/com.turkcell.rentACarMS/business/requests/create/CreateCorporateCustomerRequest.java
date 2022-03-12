@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +19,10 @@ public class CreateCorporateCustomerRequest {
     @NotNull
     @Min(0)
     @Max(50)
-    private int taxNo;
+    private int corporateTaxNo;
+    @NotNull
+    @Email
+    private String email;
+    @NotNull
+    private int password;
 }

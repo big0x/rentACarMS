@@ -6,11 +6,14 @@ import com.turkcell.rentACarMS.business.dtos.ListBrandDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateBrandRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteBrandRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateBrandRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
-import com.turkcell.rentACarMS.core.utilities.results.*;
+import com.turkcell.rentACarMS.core.utilities.results.DataResult;
+import com.turkcell.rentACarMS.core.utilities.results.Result;
+import com.turkcell.rentACarMS.core.utilities.results.SuccessDataResult;
+import com.turkcell.rentACarMS.core.utilities.results.SuccessResult;
 import com.turkcell.rentACarMS.dataAccess.abstracts.BrandDao;
 import com.turkcell.rentACarMS.entities.concretes.Brand;
-import com.turkcell.rentACarMS.entities.concretes.Color;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,74 +34,70 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public DataResult<List<ListBrandDto>> listAll() {
+
 		List<Brand> brands = this.brandDao.findAll();
-		if (!checkBrandListEmpty(brands).isSuccess()){
-			return new ErrorDataResult<List<ListBrandDto>>(checkBrandListEmpty(brands).getMessage());
-		}
 		List<ListBrandDto> listBrandDto = brands.stream().map(brand -> this.modelMapperService
 				.forDto().map(brand, ListBrandDto.class)).collect(Collectors.toList());
+
 		return new SuccessDataResult<List<ListBrandDto>>(listBrandDto,listBrandDto.size() + " : Brands found.");
 	}
 
 	@Override
-	public Result create(CreateBrandRequest createBrandRequest){
-		if (!checkBrandName(createBrandRequest.getBrandName()).isSuccess()){
-			return new ErrorResult(checkBrandName(createBrandRequest.getBrandName()).getMessage());
-		}
+	public Result create(CreateBrandRequest createBrandRequest) throws BusinessException {
+
+		checkBrandName(createBrandRequest.getBrandName());
+
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		this.brandDao.save(brand);
+
 		return new SuccessResult("Brand added : " + brand.getBrandName());
 		
 	}
 	@Override
-	public Result delete(DeleteBrandRequest deleteBrandRequest) {
-		if (!checkBrandId(deleteBrandRequest.getId()).isSuccess()){
-			return new ErrorResult(checkBrandId(deleteBrandRequest.getId()).getMessage());
-		}
+	public Result delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException {
+
+		checkBrandId(deleteBrandRequest.getId());
+
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
-		checkBrandId(brand.getId());
 		this.brandDao.delete(brand);
+
 		return new SuccessResult("Brand deleted.");
 	}
 	@Override
-	public Result update(UpdateBrandRequest updateBrandRequest) {
-		if(!checkBrandId(updateBrandRequest.getId()).isSuccess()){
-			return new ErrorResult(checkBrandName(updateBrandRequest.getBrandName()).getMessage());
-		}
+	public Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException {
+
+		checkBrandId(updateBrandRequest.getId());
+
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
 		this.brandDao.save(brand);
+
 		return new SuccessResult("Brand updated.");
 
 	}
 
 	@Override
-	public DataResult<BrandDto> getById(int brandId) {
-		if(!checkBrandId(brandId).isSuccess()){
-			return new ErrorDataResult<BrandDto>(checkBrandId(brandId).getMessage());
-		}
+	public DataResult<BrandDto> getById(int brandId) throws BusinessException {
+
+		checkBrandId(brandId);
+
 		Brand brand = this.brandDao.getById(brandId);
 		BrandDto brandDto = this.modelMapperService.forDto().map(brand,BrandDto.class);
+
 		return new SuccessDataResult<BrandDto>(brandDto);
 	}
-	private Result checkBrandName(String brandName) {
+
+	private Result checkBrandName(String brandName) throws BusinessException {
+
 		if (this.brandDao.existsByBrandName(brandName)){
-			return new ErrorResult("This brand already exists.");
+			throw new BusinessException("This brand already exists.");
 		}
 		return new SuccessResult();
 	}
-	private Result checkBrandId(int brandId) {
+	private Result checkBrandId(int brandId) throws BusinessException {
+
 		if (!this.brandDao.existsById(brandId)){
-			return new ErrorResult("Brand id could not be defined.");
+			throw new BusinessException("Brand id could not be defined.");
 		}
 		return new SuccessResult();
 	}
-	private Result checkBrandListEmpty(List<Brand> brands){
-		if(brands.isEmpty()){
-			return new ErrorDataResult<List<Color>>("Brand list is empty.");
-		}
-		return new SuccessDataResult<>();
-
-	}
-
-
 }

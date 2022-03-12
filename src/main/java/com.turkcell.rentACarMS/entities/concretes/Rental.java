@@ -48,6 +48,6 @@ public class Rental {
     @JoinColumn(name="customer_id",referencedColumnName = "id")
     private Customer customer;
 
-    @OneToMany(mappedBy = "rental")
+    @OneToMany(mappedBy = "rental",fetch = FetchType.LAZY)
     private List<OrderedAdditionalService> orderedAdditionalService;
 }

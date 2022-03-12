@@ -6,6 +6,7 @@ import com.turkcell.rentACarMS.business.dtos.ListIndividualCustomerDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateIndividualCustomerRequest;
 import com.turkcell.rentACarMS.business.requests.delete.DeleteIndividualCustomerRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateIndividualCustomerRequest;
+import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.results.DataResult;
 import com.turkcell.rentACarMS.core.utilities.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +25,24 @@ public class IndividualCustomersController {
         this.individualCustomerService = individualCustomerService;
     }
     @GetMapping("/listallindividualcustomers")
-    public DataResult<List<ListIndividualCustomerDto>> listAll() {
+    public DataResult<List<ListIndividualCustomerDto>> listAll() throws BusinessException {
         return this.individualCustomerService.listAll();
     }
     @PostMapping("/createindividualcustomer")
-    public Result create(@RequestBody @Valid CreateIndividualCustomerRequest createIndividualCustomerRequest){
+    public Result create(@RequestBody @Valid CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException {
         return this.individualCustomerService.create(createIndividualCustomerRequest);
     }
     @DeleteMapping("/deleteindividualcustomer")
-    public Result delete(@RequestBody @Valid DeleteIndividualCustomerRequest deleteIndividualCustomerRequest){
+    public Result delete(@RequestBody @Valid DeleteIndividualCustomerRequest deleteIndividualCustomerRequest) throws BusinessException {
         return this.individualCustomerService.delete(deleteIndividualCustomerRequest);
     }
     @PutMapping("/updateindividualcustomer")
-    public Result update(@RequestBody @Valid UpdateIndividualCustomerRequest updateIndividualCustomerRequest){
+    public Result update(@RequestBody @Valid UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
         return this.individualCustomerService.update(updateIndividualCustomerRequest);
     }
 
     @GetMapping("/getbyindividualcustomerid")
-    public DataResult<IndividualCustomerDto> getById(@RequestParam int individualCustomerId){
+    public DataResult<IndividualCustomerDto> getById(@RequestParam int individualCustomerId) throws BusinessException {
         return this.individualCustomerService.getById(individualCustomerId);
     }
 }

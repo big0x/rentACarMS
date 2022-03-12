@@ -9,21 +9,27 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRentalRequest {
     @ReadOnlyProperty
     private int id;
-
     @FutureOrPresent
     private LocalDate rentDate;
-
     @Future
     private LocalDate returnDate;
     @NotNull
     private int carId;
     @NotNull
     private int customerId;
+    @NotNull
+    private int rentalCityId;
+    @NotNull
+    private int returnCityId;
+
+    private List<CreateOrderedAdditionalServiceRequest> orderedAdditionalServiceRequests;
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Table(name="corporate_customers")
 @Entity
 public class CorporateCustomer extends Customer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
