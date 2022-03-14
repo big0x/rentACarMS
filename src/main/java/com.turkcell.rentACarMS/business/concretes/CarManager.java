@@ -8,8 +8,14 @@ import com.turkcell.rentACarMS.business.requests.delete.DeleteCarRequest;
 import com.turkcell.rentACarMS.business.requests.update.UpdateCarRequest;
 import com.turkcell.rentACarMS.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACarMS.core.utilities.mapping.ModelMapperService;
-import com.turkcell.rentACarMS.core.utilities.results.*;
+import com.turkcell.rentACarMS.core.utilities.results.DataResult;
+import com.turkcell.rentACarMS.core.utilities.results.Result;
+import com.turkcell.rentACarMS.core.utilities.results.SuccessDataResult;
+import com.turkcell.rentACarMS.core.utilities.results.SuccessResult;
+import com.turkcell.rentACarMS.dataAccess.abstracts.BrandDao;
 import com.turkcell.rentACarMS.dataAccess.abstracts.CarDao;
+import com.turkcell.rentACarMS.dataAccess.abstracts.CityDao;
+import com.turkcell.rentACarMS.dataAccess.abstracts.ColorDao;
 import com.turkcell.rentACarMS.entities.concretes.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +29,17 @@ import java.util.stream.Collectors;
 public class CarManager implements CarService {
     private CarDao carDao;
     private ModelMapperService modelMapperService;
+    private BrandDao brandDao;
+    private ColorDao colorDao;
+    private CityDao cityDao;
 
     @Autowired
-    public CarManager(CarDao carDao, ModelMapperService modelMapperService) {
+    public CarManager(CarDao carDao, ModelMapperService modelMapperService, BrandDao brandDao, ColorDao colorDao, CityDao cityDao) {
         this.carDao = carDao;
         this.modelMapperService = modelMapperService;
+        this.cityDao = cityDao;
+        this.colorDao = colorDao;
+        this.brandDao = brandDao;
     }
 
     @Override
@@ -40,7 +52,11 @@ public class CarManager implements CarService {
     }
 
     @Override
-    public Result create(CreateCarRequest createCarRequest) {
+    public Result create(CreateCarRequest createCarRequest) throws BusinessException {
+
+        checkBrandId(createCarRequest.getBrandId());
+        checkColorId(createCarRequest.getColorId());
+        checkCityId(createCarRequest.getCityId());
 
         Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
         this.carDao.save(car);
@@ -52,6 +68,9 @@ public class CarManager implements CarService {
     public Result update(UpdateCarRequest updateCarRequest) throws BusinessException {
 
         checkCarId(updateCarRequest.getId());
+        checkBrandId(updateCarRequest.getBrandId());
+        checkColorId(updateCarRequest.getColorId());
+        checkCityId(updateCarRequest.getCityId());
 
         Car car = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
         this.carDao.save(car);
@@ -126,6 +145,27 @@ public class CarManager implements CarService {
 
         if (!this.carDao.existsById(carId)) {
             throw new BusinessException("Car not found.");
+        }
+        return new SuccessResult();
+    }
+    private Result checkBrandId(int brandId) throws BusinessException {
+
+        if (!this.brandDao.existsById(brandId)){
+            throw new BusinessException("Brand id could not be defined.");
+        }
+        return new SuccessResult();
+    }
+    private Result checkColorId(int colorId) throws BusinessException {
+
+        if (!this.colorDao.existsById(colorId)) {
+            throw new BusinessException("Color id could not be defined.");
+        }
+        return new SuccessResult();
+    }
+    private Result checkCityId(int cityId) throws BusinessException{
+
+        if(!this.cityDao.existsById(cityId)){
+            throw new BusinessException("City not found.");
         }
         return new SuccessResult();
     }

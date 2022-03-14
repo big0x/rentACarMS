@@ -40,9 +40,9 @@ public class Rental {
     @JoinColumn(name="car_id",referencedColumnName = "id")
     private Car car;
 
-    @ManyToOne
-    @JoinColumn(name="city_id",referencedColumnName = "id")
-    private City city;
+//    @ManyToOne
+//    @JoinColumn(name="city_id",referencedColumnName = "id")
+//    private City city;
 
     @ManyToOne
     @JoinColumn(name="customer_id",referencedColumnName = "id")

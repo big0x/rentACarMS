@@ -27,7 +27,7 @@ public class City {
     @OneToMany(mappedBy = "returnCity",fetch = FetchType.LAZY)
     private List<Rental> rentalCarsReturnCity;
 
-    @OneToMany(mappedBy = "city",fetch = FetchType.LAZY)
-    private List<Rental> rentals;
+    @OneToMany(mappedBy = "rentalCity",fetch = FetchType.LAZY)
+    private List<Rental> rentalCarsRentalCity;
 }
 

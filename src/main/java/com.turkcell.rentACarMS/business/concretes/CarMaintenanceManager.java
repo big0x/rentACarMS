@@ -61,6 +61,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
     public Result update(UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException {
 
         checkCarMaintenanceId(updateCarMaintenanceRequest.getId());
+        checkCarId(updateCarMaintenanceRequest.getCarId());
 
         CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(updateCarMaintenanceRequest, CarMaintenance.class);
         this.carMaintenanceDao.save(carMaintenance);

@@ -24,8 +24,8 @@ public class UpdateRentalRequest {
     @NotNull
     private int customerId;
     @NotNull
-    private int rentalCity;
+    private int rentalCityId;
     @NotNull
-    private int returnCity;
+    private int returnCityId;
 
 }

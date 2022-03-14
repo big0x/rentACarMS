@@ -80,6 +80,8 @@ public class RentalManager implements RentalService {
         checkRentalId(updateRentalRequest.getId());
         checkCarId(updateRentalRequest.getCarId());
         checkCustomerId(updateRentalRequest.getCustomerId());
+        checkCityId(updateRentalRequest.getRentalCityId());
+        checkCityId(updateRentalRequest.getReturnCityId());
 
         Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
         this.rentalDao.save(rental);
