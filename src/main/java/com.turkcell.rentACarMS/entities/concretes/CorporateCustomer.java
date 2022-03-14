@@ -11,12 +11,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name="corporate_customers")
 @Entity
+@PrimaryKeyJoinColumn(name ="id")
 public class CorporateCustomer extends Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private int id;
     @Column(name="corporate_name")
     private String corporateName;
     @Column(name="corporate_tax_no")

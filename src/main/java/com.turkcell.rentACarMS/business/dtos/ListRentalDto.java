@@ -18,5 +18,5 @@ public class ListRentalDto {
     private String rentalCity;
     private String returnCity;
     private double rentalPrice;
-    private int additionalServiceId;
+    private int orderedAdditionalServiceId;
 }

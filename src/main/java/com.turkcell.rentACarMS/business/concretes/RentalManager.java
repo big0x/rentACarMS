@@ -12,16 +12,14 @@ import com.turkcell.rentACarMS.core.utilities.results.DataResult;
 import com.turkcell.rentACarMS.core.utilities.results.Result;
 import com.turkcell.rentACarMS.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentACarMS.core.utilities.results.SuccessResult;
-import com.turkcell.rentACarMS.dataAccess.abstracts.CarDao;
-import com.turkcell.rentACarMS.dataAccess.abstracts.CityDao;
-import com.turkcell.rentACarMS.dataAccess.abstracts.CustomerDao;
-import com.turkcell.rentACarMS.dataAccess.abstracts.RentalDao;
+import com.turkcell.rentACarMS.dataAccess.abstracts.*;
 import com.turkcell.rentACarMS.entities.concretes.Car;
 import com.turkcell.rentACarMS.entities.concretes.Rental;
 import com.turkcell.rentACarMS.entities.enums.CarStates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,15 +31,17 @@ public class RentalManager implements RentalService {
     private ModelMapperService modelMapperService;
     private CustomerDao customerDao;
     private CityDao cityDao;
+    private OrderedAdditionalServiceDao orderedAdditionalServiceDao;
 
     @Autowired
-    public RentalManager(RentalDao rentalDao, ModelMapperService modelMapperService, CarDao carDao, CustomerDao customerDao, CityDao cityDao){
+    public RentalManager(RentalDao rentalDao, ModelMapperService modelMapperService, CarDao carDao, CustomerDao customerDao, CityDao cityDao, OrderedAdditionalServiceDao orderedAdditionalServiceDao) {
 
         this.rentalDao = rentalDao;
         this.modelMapperService = modelMapperService;
         this.carDao = carDao;
         this.customerDao = customerDao;
         this.cityDao = cityDao;
+        this.orderedAdditionalServiceDao = orderedAdditionalServiceDao;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class RentalManager implements RentalService {
         List<Rental> rentals = this.rentalDao.findAll();
         List<ListRentalDto> listRentalDto = rentals.stream().map(rental -> this.modelMapperService.forDto().map(rental, ListRentalDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListRentalDto>>(listRentalDto,listRentalDto.size() + " : Rentals found.");
+        return new SuccessDataResult<List<ListRentalDto>>(listRentalDto, listRentalDto.size() + " : Rentals found.");
     }
 
     @Override
@@ -62,13 +62,14 @@ public class RentalManager implements RentalService {
         checkCityId(createRentalRequest.getReturnCityId());
         checkIfCarActive(createRentalRequest.getCarId());
 
-        //checkRentalAndReturnCitySame(createRentalRequest.getId());
 
         Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
         Car car = this.carDao.findById(createRentalRequest.getCarId());
         car.setCarStates(CarStates.ON_RENT);//Araç kiralandığı için tipi "kirada" hale getirildi.
         this.carDao.save(car);
-        this.rentalDao.save(rental);
+        Rental rentPayment = this.rentalDao.save(rental);
+
+        calculateRentPrice(rentPayment);
 
         return new SuccessResult("Rental added with id: " + rental.getId());
     }
@@ -80,7 +81,7 @@ public class RentalManager implements RentalService {
         checkCarId(updateRentalRequest.getCarId());
         checkCustomerId(updateRentalRequest.getCustomerId());
 
-        Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest,Rental.class);
+        Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
         this.rentalDao.save(rental);
 
         return new SuccessResult(updateRentalRequest.getId() + " : Rental updated.");
@@ -108,7 +109,7 @@ public class RentalManager implements RentalService {
         Rental rental = this.rentalDao.getById(rentalId);
         RentalDto rentalDto = this.modelMapperService.forDto().map(rental, RentalDto.class);
 
-        return new SuccessDataResult<RentalDto>(rentalDto,"Rental found.");
+        return new SuccessDataResult<RentalDto>(rentalDto, "Rental found.");
     }
 
     private Result checkRentalId(int rentalId) throws BusinessException {
@@ -123,8 +124,8 @@ public class RentalManager implements RentalService {
 
         Car car = this.carDao.findById(carId);
         CarStates carStates = car.getCarStates();
-        if (carStates.name()!="AVAILABLE"){
-           throw new BusinessException("Car is not available.");
+        if (carStates.name() != "AVAILABLE") {
+            throw new BusinessException("Car is not available.");
         }
         return new SuccessResult();
     }
@@ -144,27 +145,32 @@ public class RentalManager implements RentalService {
         }
         return new SuccessResult();
     }
-    private Result checkCityId(int cityId) throws BusinessException{
 
-        if (!this.cityDao.existsById(cityId)){
+    private Result checkCityId(int cityId) throws BusinessException {
+
+        if (!this.cityDao.existsById(cityId)) {
             throw new BusinessException("City not found.");
         }
         return new SuccessResult();
     }
-//    private Result checkRentalAndReturnCitySame(int rentalId){
-//
-//        Rental rental = this.rentalDao.getById(rentalId);
-//        //RentalDto rentalDto = this.modelMapperService.forDto().map(rental, RentalDto.class);
-//
-//        if (rental.getRentalCity().getId()!=rental.getReturnCity().getId()){
-//            rental.setRentalPrice(rental.getRentalPrice()+750);
-//            this.rentalDao.save(rental);
-//            return new SuccessResult();
-//        }
-//        this.rentalDao.save(rental);
-//        return new SuccessResult();
-//    }
-//    private calculateTotalPrice(int additionalServicePrice,int carDailyPrice){
-//        AdditionalService additionalService =
-//    }
+
+    private Result calculateRentPrice(Rental rentPayment) {
+
+        Rental rental = this.rentalDao.getById(rentPayment.getId());
+        Car car = this.carDao.getById(rentPayment.getCar().getId());
+
+        long rentDays = ChronoUnit.DAYS.between(rentPayment.getRentalRentDate(), rentPayment.getRentalReturnDate()) + 1;
+        double dropFee = 750;
+        double rentPrice = car.getCarDailyPrice() * rentDays;
+
+        if(rentPayment.getRentalCity().getId()==rentPayment.getReturnCity().getId()){
+            rental.setRentalPrice(rentPrice);
+            this.rentalDao.save(rental);
+        }
+        if (rentPayment.getRentalCity().getId()!=rentPayment.getReturnCity().getId()){
+            rental.setRentalPrice(rentPrice+dropFee);
+            this.rentalDao.save(rental);
+        }
+       return new SuccessResult();
+    }
 }

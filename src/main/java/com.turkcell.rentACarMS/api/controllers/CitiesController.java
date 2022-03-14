@@ -25,7 +25,7 @@ public class CitiesController {
         this.cityService = cityService;
     }
 
-    @GetMapping("/listallcitys")
+    @GetMapping("/listallcities")
     public DataResult<List<ListCityDto>> listAll() throws BusinessException {
         return this.cityService.listAll();
     }

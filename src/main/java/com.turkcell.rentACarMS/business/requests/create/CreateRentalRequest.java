@@ -18,8 +18,10 @@ public class CreateRentalRequest {
     @ReadOnlyProperty
     private int id;
     @FutureOrPresent
+    @NotNull
     private LocalDate rentDate;
     @Future
+    @NotNull
     private LocalDate returnDate;
     @NotNull
     private int carId;

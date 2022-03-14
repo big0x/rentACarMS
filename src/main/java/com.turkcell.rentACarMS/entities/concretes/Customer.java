@@ -13,11 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name="customers")
 @Entity
+@PrimaryKeyJoinColumn(name ="id")
 public class Customer extends User{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "user_id")
+//    private int id;
+
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Rental> rentals;
