@@ -15,6 +15,7 @@ public class ListCarDto {
     private String colorName;
     private double carDailyPrice;
     private int carModelYear;
+    private int carKilometer;
     private String currentCity;
     private String carDescription;
     private CarStates carStates;

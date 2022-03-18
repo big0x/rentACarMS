@@ -26,6 +26,9 @@ public class UpdateCarRequest {
     @Max(2022)
     private int carModelYear;
     @NotNull
+    @Min(0)
+    private int carKilometer;
+    @NotNull
     @Size(min = 0,max = 250)
     private String carDescription;
     @NotNull

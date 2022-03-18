@@ -3,7 +3,6 @@ package com.turkcell.rentACarMS.business.requests.create;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,8 +11,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateColorRequest {
-	@ReadOnlyProperty
-	private int id;
+//	@ReadOnlyProperty
+//	private int id;
 	@NotNull
 	@Size(min = 2,max = 50)
 	private String colorName;

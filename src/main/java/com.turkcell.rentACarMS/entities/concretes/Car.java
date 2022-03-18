@@ -28,12 +28,15 @@ public class Car {
     @Column(name="car_description")
     private String carDescription;
 
+    @Column(name="kilometer")
+    private int carKilometer;
+
     @Column(name="state")
     private CarStates carStates;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id",referencedColumnName = "id")
-    private City city;
+//    @ManyToOne
+//    @JoinColumn(name = "city_id",referencedColumnName = "id")
+//    private City city;
 
     @ManyToOne
     @JoinColumn(name="brand_id",referencedColumnName = "id")
@@ -48,5 +51,11 @@ public class Car {
 
     @OneToMany(mappedBy = "car",fetch = FetchType.LAZY)
     private List<Rental> rentals;
+
+//    @OneToMany(mappedBy = "rentalKilometer",fetch = FetchType.LAZY)
+//    private List<Rental> rentalKilometers;
+//
+//    @OneToMany(mappedBy = "returnKilometer",fetch = FetchType.LAZY)
+//    private List<Rental> returnKilometers;
 
 }

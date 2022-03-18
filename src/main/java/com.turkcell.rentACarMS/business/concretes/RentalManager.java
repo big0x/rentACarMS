@@ -18,6 +18,7 @@ import com.turkcell.rentACarMS.entities.concretes.Rental;
 import com.turkcell.rentACarMS.entities.enums.CarStates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class RentalManager implements RentalService {
+
 
     private CarDao carDao;
     private RentalDao rentalDao;
@@ -54,6 +56,7 @@ public class RentalManager implements RentalService {
     }
 
     @Override
+    @Transactional
     public Result create(CreateRentalRequest createRentalRequest) throws BusinessException {
 
         checkCustomerId(createRentalRequest.getCustomerId());
@@ -75,6 +78,7 @@ public class RentalManager implements RentalService {
     }
 
     @Override
+    @Transactional
     public Result update(UpdateRentalRequest updateRentalRequest) throws BusinessException {
 
         checkRentalId(updateRentalRequest.getId());
@@ -84,12 +88,16 @@ public class RentalManager implements RentalService {
         checkCityId(updateRentalRequest.getReturnCityId());
 
         Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
+        Car car = this.carDao.findById(updateRentalRequest.getCarId());
+        car.setCarKilometer(updateRentalRequest.getReturnKilometer());
+        this.carDao.save(car);
         this.rentalDao.save(rental);
 
         return new SuccessResult(updateRentalRequest.getId() + " : Rental updated.");
     }
 
     @Override
+    @Transactional
     public Result delete(DeleteRentalRequest deleteRentalRequest) throws BusinessException {
 
         checkRentalId(deleteRentalRequest.getId());

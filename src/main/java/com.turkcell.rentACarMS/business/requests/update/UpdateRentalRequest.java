@@ -3,6 +3,7 @@ package com.turkcell.rentACarMS.business.requests.update;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -21,6 +22,10 @@ public class UpdateRentalRequest {
     private LocalDate returnDate;
     @NotNull
     private int carId;
+    @NotNull
+    private int rentalKilometer;
+    @Nullable
+    private int returnKilometer;
     @NotNull
     private int customerId;
     @NotNull

@@ -28,6 +28,12 @@ public class Rental {
     @Column(name="rental_price")
     private double rentalPrice;
 
+    @Column(name="rental_kilometer")
+    private int rentalKilometer;
+
+    @Column(name="return_kilometer")
+    private int returnKilometer;
+
     @ManyToOne
     @JoinColumn(name = "rental_city_id",referencedColumnName = "id")
     private City rentalCity;
@@ -50,4 +56,7 @@ public class Rental {
 
     @OneToMany(mappedBy = "rental",fetch = FetchType.LAZY)
     private List<OrderedAdditionalService> orderedAdditionalService;
+
+    @OneToOne(mappedBy = "rental")
+    private Invoice invoice;
 }

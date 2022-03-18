@@ -3,7 +3,7 @@ package com.turkcell.rentACarMS.business.requests.create;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
@@ -15,14 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRentalRequest {
-    @ReadOnlyProperty
-    private int id;
+//    @ReadOnlyProperty
+//    private int id;
     @FutureOrPresent
     @NotNull
     private LocalDate rentDate;
     @Future
     @NotNull
     private LocalDate returnDate;
+    @NotNull
+    private int rentalKilometer;
+    @Nullable
+    private int returnKilometer;
     @NotNull
     private int carId;
     @NotNull

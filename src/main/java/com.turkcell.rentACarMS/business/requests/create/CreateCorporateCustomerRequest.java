@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCorporateCustomerRequest {
-    @ReadOnlyProperty
-    private int id;
+//    @ReadOnlyProperty
+//    private int id;
     @NotNull
     @Size(min = 2,max = 50)
     private String corporateName;
@@ -24,5 +25,7 @@ public class CreateCorporateCustomerRequest {
     @Email
     private String email;
     @NotNull
-    private int password;
+    private String password;
+    @FutureOrPresent
+    private LocalDate registeredAt;
 }

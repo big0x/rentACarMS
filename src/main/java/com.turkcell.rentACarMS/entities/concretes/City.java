@@ -21,13 +21,15 @@ public class City {
     @Column(name="city_name")
     private String cityName;
 
-    @OneToMany(mappedBy = "city",fetch = FetchType.LAZY)
-    private List<Car> cars;
+//    @OneToMany(mappedBy = "city",fetch = FetchType.LAZY)
+//    private List<Car> cars;
+
+    @OneToMany(mappedBy = "rentalCity",fetch = FetchType.LAZY)
+    private List<Rental> rentalCarsRentalCity;
 
     @OneToMany(mappedBy = "returnCity",fetch = FetchType.LAZY)
     private List<Rental> rentalCarsReturnCity;
 
-    @OneToMany(mappedBy = "rentalCity",fetch = FetchType.LAZY)
-    private List<Rental> rentalCarsRentalCity;
+
 }
 

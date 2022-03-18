@@ -3,7 +3,6 @@ package com.turkcell.rentACarMS.business.requests.create;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,8 +10,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOrderedAdditionalServiceRequest {
-    @ReadOnlyProperty
-    private int id;
+//    @ReadOnlyProperty
+//    private int id;
     @NotNull
     private int additionalServiceId;
 }

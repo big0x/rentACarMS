@@ -14,6 +14,7 @@ import com.turkcell.rentACarMS.entities.concretes.CorporateCustomer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
     public Result create(CreateCorporateCustomerRequest createCorporateCustomerRequest) {
 
         CorporateCustomer corporateCustomer = this.modelMapperService.forRequest().map(createCorporateCustomerRequest, CorporateCustomer.class);
+        corporateCustomer.setRegisteredAt(LocalDate.now());
         this.corporateCustomerDao.save(corporateCustomer);
 
         return new SuccessResult("Corporate Customer added with id: " + corporateCustomer.getId());

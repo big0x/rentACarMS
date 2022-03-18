@@ -4,7 +4,6 @@ import com.turkcell.rentACarMS.entities.enums.CarStates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -15,8 +14,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCarRequest {
-    @ReadOnlyProperty
-    private int id;
+//    @ReadOnlyProperty
+//    private int id;
 
     @NotNull
     @Min(0)
@@ -31,6 +30,10 @@ public class CreateCarRequest {
     private String carDescription;
 
     @NotNull
+    @Min(0)
+    private int carKilometer;
+
+    @NotNull
     private int brandId;
 
     @NotNull
@@ -41,4 +44,6 @@ public class CreateCarRequest {
 
     @NotNull
     private CarStates carStates;
+
+
 }

@@ -3,17 +3,19 @@ package com.turkcell.rentACarMS.business.requests.create;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateIndividualCustomerRequest {
-    @ReadOnlyProperty
-    private int id;
+//    @ReadOnlyProperty
+//    private int id;
     @NotNull
     @Size(min = 2,max = 50)
     private String customerFirstName;
@@ -24,5 +26,7 @@ public class CreateIndividualCustomerRequest {
     @Email
     private String email;
     @NotNull
-    private int password;
+    private String password;
+    @FutureOrPresent
+    private LocalDate registeredAt;
 }

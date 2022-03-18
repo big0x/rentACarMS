@@ -14,6 +14,7 @@ import com.turkcell.rentACarMS.entities.concretes.IndividualCustomer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,8 @@ public class IndividualCustomerManager implements IndividualCustomerService {
     public Result create(CreateIndividualCustomerRequest createIndividualCustomerRequest) {
 
         IndividualCustomer individualCustomer = this.modelMapperService.forRequest().map(createIndividualCustomerRequest, IndividualCustomer.class);
+        individualCustomer.setRegisteredAt(LocalDate.now());
+
         this.individualCustomerDao.save(individualCustomer);
 
         return new SuccessResult("Individual Customer added with id: " + individualCustomer.getId());
