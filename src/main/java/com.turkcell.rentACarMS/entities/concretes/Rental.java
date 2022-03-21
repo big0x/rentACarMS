@@ -46,10 +46,6 @@ public class Rental {
     @JoinColumn(name="car_id",referencedColumnName = "id")
     private Car car;
 
-//    @ManyToOne
-//    @JoinColumn(name="city_id",referencedColumnName = "id")
-//    private City city;
-
     @ManyToOne
     @JoinColumn(name="customer_id",referencedColumnName = "id")
     private Customer customer;
@@ -57,6 +53,9 @@ public class Rental {
     @OneToMany(mappedBy = "rental",fetch = FetchType.LAZY)
     private List<OrderedAdditionalService> orderedAdditionalService;
 
-    @OneToOne(mappedBy = "rental")
-    private Invoice invoice;
+    @OneToOne(mappedBy = "invoiceRental")
+    private Invoice rentalInvoice;
+
+    @OneToMany(mappedBy = "paymentRental")
+    private List<Payment> rentalPayments;
 }

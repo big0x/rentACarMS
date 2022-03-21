@@ -40,9 +40,12 @@ public class Invoice {
     @JoinColumn(name="customer_id",referencedColumnName = "id")
     private Customer customer;
 
+    @OneToOne(mappedBy = "paymentInvoice")
+    private Payment invoicePayment;
+
     @OneToOne
-    @JoinColumn(name = "rental_id",referencedColumnName = "id")
-    private Rental rental;
+    @JoinColumn(name = "rental_id")
+    private Rental invoiceRental;
 
 
 }

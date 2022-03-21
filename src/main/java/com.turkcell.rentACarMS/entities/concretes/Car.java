@@ -34,10 +34,6 @@ public class Car {
     @Column(name="state")
     private CarStates carStates;
 
-//    @ManyToOne
-//    @JoinColumn(name = "city_id",referencedColumnName = "id")
-//    private City city;
-
     @ManyToOne
     @JoinColumn(name="brand_id",referencedColumnName = "id")
     private Brand brand;
@@ -52,10 +48,7 @@ public class Car {
     @OneToMany(mappedBy = "car",fetch = FetchType.LAZY)
     private List<Rental> rentals;
 
-//    @OneToMany(mappedBy = "rentalKilometer",fetch = FetchType.LAZY)
-//    private List<Rental> rentalKilometers;
-//
-//    @OneToMany(mappedBy = "returnKilometer",fetch = FetchType.LAZY)
-//    private List<Rental> returnKilometers;
+    @OneToMany(mappedBy = "car",fetch = FetchType.LAZY)
+    private List<CarDamage> carDamages;
 
 }

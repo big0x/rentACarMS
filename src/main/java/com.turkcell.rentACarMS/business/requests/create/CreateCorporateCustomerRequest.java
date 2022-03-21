@@ -3,7 +3,6 @@ package com.turkcell.rentACarMS.business.requests.create;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -20,6 +19,7 @@ public class CreateCorporateCustomerRequest {
     @NotNull
     @Min(0)
     @Max(50)
+
     private int corporateTaxNo;
     @NotNull
     @Email

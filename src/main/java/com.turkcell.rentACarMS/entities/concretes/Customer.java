@@ -21,6 +21,7 @@ public class Customer extends User{
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "id")
 //    private int id;
+
     private LocalDate registeredAt;
 
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)

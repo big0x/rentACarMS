@@ -5,26 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="carMaintenances")
+@Table(name="car_damages")
 @Entity
-public class CarMaintenance {
+public class CarDamage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
 
-    @Column(name="car_maintenance_description")
-    private String carMaintenanceDescription;
-
-    @Column(name="car_maintenance_return_date")
-    private LocalDate carMaintenanceReturnDate;
+    @Column(name = "car_damage_description")
+    private String carDamageDescription;
 
     @ManyToOne
-    @JoinColumn(name="car_id",referencedColumnName = "id")
+    @JoinColumn(name="car_id")
     private Car car;
+
+
 }

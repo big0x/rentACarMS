@@ -21,10 +21,12 @@ public class CreateCarRequest {
     @Min(0)
     @Max(100)
     private double carDailyPrice;
+
     @NotNull
     @Min(0)
     @Max(2022)
     private int carModelYear;
+
     @NotNull
     @Size(min = 0,max = 250)
     private String carDescription;

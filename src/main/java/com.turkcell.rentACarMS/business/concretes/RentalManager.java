@@ -44,6 +44,7 @@ public class RentalManager implements RentalService {
         this.customerDao = customerDao;
         this.cityDao = cityDao;
         this.orderedAdditionalServiceDao = orderedAdditionalServiceDao;
+
     }
 
     @Override
