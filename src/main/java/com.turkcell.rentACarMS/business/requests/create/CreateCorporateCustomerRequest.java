@@ -11,8 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCorporateCustomerRequest {
-//    @ReadOnlyProperty
-//    private int id;
+
     @NotNull
     @Size(min = 2,max = 50)
     private String corporateName;

@@ -14,8 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateIndividualCustomerRequest {
-//    @ReadOnlyProperty
-//    private int id;
+
     @NotNull
     @Size(min = 2,max = 50)
     private String customerFirstName;

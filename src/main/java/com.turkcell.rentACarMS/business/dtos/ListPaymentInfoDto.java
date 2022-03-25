@@ -1,27 +1,16 @@
-package com.turkcell.rentACarMS.business.requests.create;
+package com.turkcell.rentACarMS.business.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePaymentRequest {
-
-    private double totalPayment;
-
-    private int customerId;
-
+public class ListPaymentInfoDto {
     private String creditCardOwnerName;
-
     private String creditCardNumber;
-
     private String creditCardCVV;
-
     private LocalDate creditCardExpirationDate;
-
-    private boolean rememberMe;
 }

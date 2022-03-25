@@ -1,6 +1,7 @@
 package com.turkcell.rentACarMS.business.concretes;
 
 import com.turkcell.rentACarMS.business.abstracts.RentalService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.ListRentalDto;
 import com.turkcell.rentACarMS.business.dtos.RentalDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateRentalRequest;
@@ -53,7 +54,7 @@ public class RentalManager implements RentalService {
         List<Rental> rentals = this.rentalDao.findAll();
         List<ListRentalDto> listRentalDto = rentals.stream().map(rental -> this.modelMapperService.forDto().map(rental, ListRentalDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListRentalDto>>(listRentalDto, listRentalDto.size() + " : Rentals found.");
+        return new SuccessDataResult<List<ListRentalDto>>(listRentalDto, listRentalDto.size() + " " + Messages.RENTALFOUND);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class RentalManager implements RentalService {
 
         calculateRentPrice(rentPayment);
 
-        return new SuccessResult("Rental added with id: " + rental.getId());
+        return new SuccessResult(Messages.RENTALADDED);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class RentalManager implements RentalService {
         this.carDao.save(car);
         this.rentalDao.save(rental);
 
-        return new SuccessResult(updateRentalRequest.getId() + " : Rental updated.");
+        return new SuccessResult(Messages.RENTALUPDATED);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class RentalManager implements RentalService {
         this.carDao.save(car);
         this.rentalDao.delete(rental);
 
-        return new SuccessResult(deleteRentalRequest.getId() + " : Rental deleted.");
+        return new SuccessResult(Messages.RENTALDELETED);
     }
 
     @Override
@@ -120,13 +121,13 @@ public class RentalManager implements RentalService {
         Rental rental = this.rentalDao.getById(rentalId);
         RentalDto rentalDto = this.modelMapperService.forDto().map(rental, RentalDto.class);
 
-        return new SuccessDataResult<RentalDto>(rentalDto, "Rental found.");
+        return new SuccessDataResult<RentalDto>(rentalDto, Messages.RENTALFOUND);
     }
 
     private Result checkRentalId(int rentalId) throws BusinessException {
 
         if (!this.rentalDao.existsById(rentalId)) {
-            throw new BusinessException("Rental not found.");
+            throw new BusinessException(Messages.RENTALNOTFOUND);
         }
         return new SuccessResult();
     }
@@ -136,7 +137,7 @@ public class RentalManager implements RentalService {
         Car car = this.carDao.findById(carId);
         CarStates carStates = car.getCarStates();
         if (carStates.name() != "AVAILABLE") {
-            throw new BusinessException("Car is not available.");
+            throw new BusinessException(Messages.CARNOTAVAILABLE);
         }
         return new SuccessResult();
     }
@@ -144,7 +145,7 @@ public class RentalManager implements RentalService {
     private Result checkCarId(int carId) throws BusinessException {
 
         if (!this.carDao.existsById(carId)) {
-            throw new BusinessException("Car not found.");
+            throw new BusinessException(Messages.CARNOTFOUND);
         }
         return new SuccessResult();
     }
@@ -152,7 +153,7 @@ public class RentalManager implements RentalService {
     private Result checkCustomerId(int customerId) throws BusinessException {
 
         if (!this.customerDao.existsById(customerId)) {
-            throw new BusinessException("Customer not found.");
+            throw new BusinessException(Messages.CUSTOMERNOTFOUND);
         }
         return new SuccessResult();
     }
@@ -160,11 +161,12 @@ public class RentalManager implements RentalService {
     private Result checkCityId(int cityId) throws BusinessException {
 
         if (!this.cityDao.existsById(cityId)) {
-            throw new BusinessException("City not found.");
+            throw new BusinessException(Messages.CITYNOTFOUND);
         }
         return new SuccessResult();
     }
 
+    // calculating methods will be separate
     private Result calculateRentPrice(Rental rentPayment) {
 
         Rental rental = this.rentalDao.getById(rentPayment.getId());

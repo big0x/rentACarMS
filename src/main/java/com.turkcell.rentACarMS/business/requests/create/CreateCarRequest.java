@@ -14,8 +14,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCarRequest {
-//    @ReadOnlyProperty
-//    private int id;
 
     @NotNull
     @Min(0)

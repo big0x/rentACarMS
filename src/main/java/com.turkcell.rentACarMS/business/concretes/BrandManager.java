@@ -1,6 +1,7 @@
 package com.turkcell.rentACarMS.business.concretes;
 
 import com.turkcell.rentACarMS.business.abstracts.BrandService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.BrandDto;
 import com.turkcell.rentACarMS.business.dtos.ListBrandDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateBrandRequest;
@@ -39,7 +40,7 @@ public class BrandManager implements BrandService {
 		List<ListBrandDto> listBrandDto = brands.stream().map(brand -> this.modelMapperService
 				.forDto().map(brand, ListBrandDto.class)).collect(Collectors.toList());
 
-		return new SuccessDataResult<List<ListBrandDto>>(listBrandDto,listBrandDto.size() + " : Brands found.");
+		return new SuccessDataResult<List<ListBrandDto>>(listBrandDto,listBrandDto.size() + " : " + Messages.BRANDFOUND);
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class BrandManager implements BrandService {
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		this.brandDao.save(brand);
 
-		return new SuccessResult("Brand added : " + brand.getBrandName());
+		return new SuccessResult(Messages.BRANDADDED);
 		
 	}
 	@Override
@@ -61,7 +62,7 @@ public class BrandManager implements BrandService {
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
 		this.brandDao.delete(brand);
 
-		return new SuccessResult("Brand deleted.");
+		return new SuccessResult(Messages.BRANDDELETED);
 	}
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException {
@@ -71,7 +72,7 @@ public class BrandManager implements BrandService {
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
 		this.brandDao.save(brand);
 
-		return new SuccessResult("Brand updated.");
+		return new SuccessResult(Messages.BRANDUPDATED);
 
 	}
 
@@ -83,20 +84,20 @@ public class BrandManager implements BrandService {
 		Brand brand = this.brandDao.getById(brandId);
 		BrandDto brandDto = this.modelMapperService.forDto().map(brand,BrandDto.class);
 
-		return new SuccessDataResult<BrandDto>(brandDto);
+		return new SuccessDataResult<BrandDto>(brandDto,Messages.BRANDFOUND);
 	}
 
 	private Result checkBrandName(String brandName) throws BusinessException {
 
 		if (this.brandDao.existsByBrandName(brandName)){
-			throw new BusinessException("This brand already exists.");
+			throw new BusinessException(Messages.BRANDEXISTS);
 		}
 		return new SuccessResult();
 	}
 	private Result checkBrandId(int brandId) throws BusinessException {
 
 		if (!this.brandDao.existsById(brandId)){
-			throw new BusinessException("Brand id could not be defined.");
+			throw new BusinessException(Messages.BRANDNOTFOUND);
 		}
 		return new SuccessResult();
 	}

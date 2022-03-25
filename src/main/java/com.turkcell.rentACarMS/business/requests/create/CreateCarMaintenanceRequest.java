@@ -13,8 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CreateCarMaintenanceRequest {
 
-//    @ReadOnlyProperty
-//    private int id;
+
     @NotNull
     @Size(min = 2,max = 250)
     private String carMaintenanceDescription;

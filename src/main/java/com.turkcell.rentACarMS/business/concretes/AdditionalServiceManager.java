@@ -1,6 +1,7 @@
 package com.turkcell.rentACarMS.business.concretes;
 
 import com.turkcell.rentACarMS.business.abstracts.AdditionalServiceService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentACarMS.business.dtos.ListAdditionalServiceDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateAdditionalServiceRequest;
@@ -38,7 +39,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
             List<ListAdditionalServiceDto> listAdditionalServiceDto = additionalServices.stream().map(additionalService -> this.modelMapperService
                     .forDto().map(additionalService, ListAdditionalServiceDto.class)).collect(Collectors.toList());
 
-            return new SuccessDataResult<List<ListAdditionalServiceDto>>(listAdditionalServiceDto,listAdditionalServiceDto.size() + " : Additional Services found.");
+            return new SuccessDataResult<List<ListAdditionalServiceDto>>(listAdditionalServiceDto,listAdditionalServiceDto.size() + " : " + Messages.ADDITIONALSERVICEFOUND);
         }
 
         @Override
@@ -49,7 +50,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
             AdditionalService additionalService = this.modelMapperService.forRequest().map(createAdditionalServiceRequest, AdditionalService.class);
             this.additionalServiceDao.save(additionalService);
 
-            return new SuccessResult("Additional Service added : " + additionalService.getAdditionalServiceName());
+            return new SuccessResult(Messages.ADDITIONALSERVICEADDED);
         }
 
         @Override
@@ -60,7 +61,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
             AdditionalService additionalService = this.modelMapperService.forRequest().map(updateAdditionalServiceRequest, AdditionalService.class);
             this.additionalServiceDao.save(additionalService);
 
-            return new SuccessResult("Additional Service updated.");
+            return new SuccessResult(Messages.ADDITIONALSERVICEUPDATED);
         }
 
         @Override
@@ -71,7 +72,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
             AdditionalService additionalService = this.modelMapperService.forRequest().map(deleteAdditionalServiceRequest, AdditionalService.class);
             this.additionalServiceDao.delete(additionalService);
 
-            return new SuccessResult("Additional Service deleted.");
+            return new SuccessResult(Messages.ADDITIONALSERVICEDELETED);
         }
         @Override
         public DataResult<AdditionalServiceDto> getById ( int additionalServiceId) throws BusinessException {
@@ -81,20 +82,20 @@ public class AdditionalServiceManager implements AdditionalServiceService {
             AdditionalService additionalService = this.additionalServiceDao.getById(additionalServiceId);
             AdditionalServiceDto additionalServiceDto = this.modelMapperService.forDto().map(additionalService,AdditionalServiceDto.class);
 
-            return new SuccessDataResult<AdditionalServiceDto>(additionalServiceDto,"Additional Service found.");
+            return new SuccessDataResult<AdditionalServiceDto>(additionalServiceDto,Messages.ADDITIONALSERVICEFOUND);
         }
 
         private Result checkAdditionalServiceId(int additionalServiceId) throws BusinessException {
 
             if (!this.additionalServiceDao.existsById(additionalServiceId)) {
-            throw  new BusinessException("Additional Service not found.");
+            throw  new BusinessException(Messages.ADDITIONALSERVICENOTFOUND);
             }
          return new SuccessResult();
         }
         private Result checkAdditionalServiceName(String additionalServiceName) throws BusinessException {
 
             if (this.additionalServiceDao.existsByAdditionalServiceName(additionalServiceName)){
-            throw new BusinessException("This Additional Service already exists.");
+            throw new BusinessException(Messages.ADDITIONALSERVICEEXISTS);
             }
          return new SuccessResult();
         }

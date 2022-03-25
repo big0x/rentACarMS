@@ -10,8 +10,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOrderedAdditionalServiceRequest {
-//    @ReadOnlyProperty
-//    private int id;
+
     @NotNull
     private int additionalServiceId;
 }

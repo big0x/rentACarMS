@@ -1,6 +1,7 @@
 package com.turkcell.rentACarMS.business.concretes;
 
 import com.turkcell.rentACarMS.business.abstracts.CorporateCustomerService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.CorporateCustomerDto;
 import com.turkcell.rentACarMS.business.dtos.ListCorporateCustomerDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateCorporateCustomerRequest;
@@ -36,7 +37,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
         List<CorporateCustomer> corporateCustomers =this.corporateCustomerDao.findAll();
         List<ListCorporateCustomerDto> listCorporateCustomerDto = corporateCustomers.stream().map(corporateCustomer -> this.modelMapperService.forDto().map(corporateCustomer, ListCorporateCustomerDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListCorporateCustomerDto>>(listCorporateCustomerDto,listCorporateCustomerDto.size() + " : Corporate Customers found.");
+        return new SuccessDataResult<List<ListCorporateCustomerDto>>(listCorporateCustomerDto,listCorporateCustomerDto.size() + " : " + Messages.CORPORATECUSTOMERFOUND);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
         corporateCustomer.setRegisteredAt(LocalDate.now());
         this.corporateCustomerDao.save(corporateCustomer);
 
-        return new SuccessResult("Corporate Customer added with id: " + corporateCustomer.getId());
+        return new SuccessResult(Messages.CORPORATECUSTOMERADDED);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
         CorporateCustomer corporateCustomer = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
         this.corporateCustomerDao.save(corporateCustomer);
 
-        return new SuccessResult(updateCorporateCustomerRequest.getId() + " : Corporate Customer updated.");
+        return new SuccessResult(Messages.CORPORATECUSTOMERUPDATED);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
         CorporateCustomer corporateCustomer = this.modelMapperService.forRequest().map(deleteCorporateCustomerRequest, CorporateCustomer.class);
         this.corporateCustomerDao.delete(corporateCustomer);
 
-        return new SuccessResult(deleteCorporateCustomerRequest.getId() + " Corporate Customer deleted.");
+        return new SuccessResult(Messages.CORPORATECUSTOMERDELETED);
     }
     @Override
     public DataResult<CorporateCustomerDto> getById(int corporateCustomerId) throws BusinessException {
@@ -78,12 +79,12 @@ public class CorporateCustomerManager implements CorporateCustomerService {
         CorporateCustomer corporateCustomer = this.corporateCustomerDao.getById(corporateCustomerId);
         CorporateCustomerDto corporateCustomerDto = this.modelMapperService.forDto().map(corporateCustomer,CorporateCustomerDto.class);
 
-        return new SuccessDataResult<CorporateCustomerDto>(corporateCustomerDto, " Corporate customer found.");
+        return new SuccessDataResult<CorporateCustomerDto>(corporateCustomerDto, Messages.CORPORATECUSTOMERFOUND);
     }
     private Result checkCorporateCustomerId(int corporateCustomerId) throws BusinessException {
 
         if (!this.corporateCustomerDao.existsById(corporateCustomerId)) {
-            throw new BusinessException("Corporate Customer not found.");
+            throw new BusinessException(Messages.CORPORATECUSTOMERNOTFOUND);
         }
         return new SuccessResult();
     }

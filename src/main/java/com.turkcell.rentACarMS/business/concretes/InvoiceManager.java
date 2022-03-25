@@ -4,6 +4,7 @@ import com.turkcell.rentACarMS.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentACarMS.business.abstracts.InvoiceService;
 import com.turkcell.rentACarMS.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentACarMS.business.abstracts.RentalService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.InvoiceDto;
 import com.turkcell.rentACarMS.business.dtos.ListInvoiceDto;
 import com.turkcell.rentACarMS.business.dtos.RentalDto;
@@ -52,7 +53,7 @@ public class InvoiceManager implements InvoiceService {
         List<Invoice> invoices = this.invoiceDao.findAll();
         List<ListInvoiceDto> listInvoiceDto = invoices.stream().map(invoice -> this.modelMapperService.forDto().map(invoice, ListInvoiceDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListInvoiceDto>>(listInvoiceDto, listInvoiceDto.size() + " : Invoices found.");
+        return new SuccessDataResult<List<ListInvoiceDto>>(listInvoiceDto, listInvoiceDto.size() + " : " + Messages.INVOICEFOUND);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class InvoiceManager implements InvoiceService {
 
         this.invoiceDao.save(invoice);
 
-        return new SuccessResult("Invoice created.");
+        return new SuccessResult(Messages.INVOICEADDED);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class InvoiceManager implements InvoiceService {
 
         this.invoiceDao.save(invoice);
 
-        return new SuccessResult(updateInvoiceRequest.getId() + " : Invoice updated.");
+        return new SuccessResult(Messages.INVOICEUPDATED);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class InvoiceManager implements InvoiceService {
 
         this.invoiceDao.delete(invoice);
 
-        return new SuccessResult(deleteInvoiceRequest.getId() + " : Invoice deleted.");
+        return new SuccessResult(Messages.INVOICEDELETED);
     }
 
     @Override
@@ -111,31 +112,31 @@ public class InvoiceManager implements InvoiceService {
         Invoice invoice = this.invoiceDao.getById(invoiceId);
         InvoiceDto invoiceDto = this.modelMapperService.forDto().map(invoice, InvoiceDto.class);
 
-        return new SuccessDataResult<InvoiceDto>(invoiceDto, " Invoice found.");
+        return new SuccessDataResult<InvoiceDto>(invoiceDto, Messages.INVOICEFOUND);
     }
 
     private Result checkInvoiceExists(int invoiceId){
         if(!this.invoiceDao.existsById(invoiceId)){
-            throw new BusinessException("Invoice not found.");
+            throw new BusinessException(Messages.INVOICENOTFOUND);
         }
         return new SuccessResult();
     }
     private Result checkInvoiceNoExists(long invoiceNo){
         if(this.invoiceDao.existsByInvoiceNo(invoiceNo)){
-            throw new BusinessException("This invoice already exists.");
+            throw new BusinessException(Messages.INVOICENOEXISTS);
         }
         return new SuccessResult();
     }
     private Result checkRentalId(int rentalId) throws BusinessException {
 
         if (this.rentalService.getById(rentalId)==null) {
-            throw new BusinessException("Rental not found.");
+            throw new BusinessException(Messages.RENTALNOTFOUND);
         }
         return new SuccessResult();
     }
     private Result checkCustomerId(int customerId) throws BusinessException{
         if(!this.customerDao.existsById(customerId)){
-            throw new BusinessException("Customer not found.");
+            throw new BusinessException(Messages.CUSTOMERNOTFOUND);
         }
         return new SuccessResult();
     }

@@ -11,8 +11,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateColorRequest {
-//	@ReadOnlyProperty
-//	private int id;
+
 	@NotNull
 	@Size(min = 2,max = 50)
 	private String colorName;

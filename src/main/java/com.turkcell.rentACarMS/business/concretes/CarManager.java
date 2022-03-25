@@ -1,6 +1,7 @@
 package com.turkcell.rentACarMS.business.concretes;
 
 import com.turkcell.rentACarMS.business.abstracts.CarService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.CarDto;
 import com.turkcell.rentACarMS.business.dtos.ListCarDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateCarRequest;
@@ -48,7 +49,7 @@ public class CarManager implements CarService {
         List<Car> cars = this.carDao.findAll();
         List<ListCarDto> listCarDto = cars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " : Cars found.");
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " : " + Messages.CARFOUND);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class CarManager implements CarService {
         Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
         this.carDao.save(car);
 
-        return new SuccessResult("Car added with id: " + car.getId());
+        return new SuccessResult(Messages.CARADDED);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class CarManager implements CarService {
         Car car = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
         this.carDao.save(car);
 
-        return new SuccessResult(updateCarRequest.getId() + " : Car updated.");
+        return new SuccessResult(Messages.CARUPDATED);
 
     }
 
@@ -87,7 +88,7 @@ public class CarManager implements CarService {
         Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
         this.carDao.delete(car);
 
-        return new SuccessResult(deleteCarRequest.getId() + " : Car deleted.");
+        return new SuccessResult(Messages.CARDELETED);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class CarManager implements CarService {
         Car car = this.carDao.getById(carId);
         CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
 
-        return new SuccessDataResult<CarDto>(carDto,"Car found.");
+        return new SuccessDataResult<CarDto>(carDto,Messages.CARFOUND);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class CarManager implements CarService {
         List<Car> result = this.carDao.findAll(pageable).getContent();
         List<ListCarDto> response = result.stream().map(car -> this.modelMapperService.forDto().map(car,ListCarDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListCarDto>>(response,"Car list paged.");
+        return new SuccessDataResult<List<ListCarDto>>(response);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class CarManager implements CarService {
         List<Car> descCars = this.carDao.findAll(sort);
         List<ListCarDto> listCarDto = descCars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto,"Cars sorted in descending order");
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto);
     }
 
     @Override
@@ -128,7 +129,7 @@ public class CarManager implements CarService {
         List<Car> ascCars = this.carDao.findAll(sort);
         List<ListCarDto> listCarDto = ascCars.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto, "Cars sorted in ascending order");
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto);
     }
 
     @Override
@@ -138,34 +139,34 @@ public class CarManager implements CarService {
 //      if(cars.isEmpty()) {return new ErrorDataResult<List<ListCarDto>>(null, "There is no results.");}
         List<ListCarDto> listCarDto = cars.stream().map(car -> this.modelMapperService.forDto().map(car,ListCarDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " Cars found.");
+        return new SuccessDataResult<List<ListCarDto>>(listCarDto,listCarDto.size() + " : " + Messages.CARFOUND);
     }
 
     private Result checkCarId(int carId) throws BusinessException {
 
         if (!this.carDao.existsById(carId)) {
-            throw new BusinessException("Car not found.");
+            throw new BusinessException(Messages.CARNOTFOUND);
         }
         return new SuccessResult();
     }
     private Result checkBrandId(int brandId) throws BusinessException {
 
         if (!this.brandDao.existsById(brandId)){
-            throw new BusinessException("Brand id could not be defined.");
+            throw new BusinessException(Messages.BRANDNOTFOUND);
         }
         return new SuccessResult();
     }
     private Result checkColorId(int colorId) throws BusinessException {
 
         if (!this.colorDao.existsById(colorId)) {
-            throw new BusinessException("Color id could not be defined.");
+            throw new BusinessException(Messages.COLORNOTFOUND);
         }
         return new SuccessResult();
     }
     private Result checkCityId(int cityId) throws BusinessException{
 
         if(!this.cityDao.existsById(cityId)){
-            throw new BusinessException("City not found.");
+            throw new BusinessException(Messages.CITYNOTFOUND);
         }
         return new SuccessResult();
     }

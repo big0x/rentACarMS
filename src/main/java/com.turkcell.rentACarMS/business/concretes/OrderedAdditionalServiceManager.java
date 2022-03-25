@@ -1,6 +1,7 @@
 package com.turkcell.rentACarMS.business.concretes;
 
 import com.turkcell.rentACarMS.business.abstracts.OrderedAdditionalServiceService;
+import com.turkcell.rentACarMS.business.constants.Messages;
 import com.turkcell.rentACarMS.business.dtos.ListOrderedAdditionalServiceDto;
 import com.turkcell.rentACarMS.business.dtos.OrderedAdditionalServiceDto;
 import com.turkcell.rentACarMS.business.requests.create.CreateOrderedAdditionalServiceRequest;
@@ -42,7 +43,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
         List<OrderedAdditionalService> orderedAdditionalServices = this.orderedAdditionalServiceDao.findAll();
         List<ListOrderedAdditionalServiceDto> listOrderedAdditionalServiceDto = orderedAdditionalServices.stream().map(orderedAdditionalService -> this.modelMapperService.forDto().map(orderedAdditionalService,ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
 
-        return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(listOrderedAdditionalServiceDto,listOrderedAdditionalServiceDto.size() + " : Ordered Additional Services found.");
+        return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(listOrderedAdditionalServiceDto,listOrderedAdditionalServiceDto.size() + " : " + Messages.ORDEREDADDITIONALSERVICEFOUND);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
         OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().map(createOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.save(orderedAdditionalService);
 
-        return new SuccessResult("Ordered Additional Service added with id: " + orderedAdditionalService.getId());
+        return new SuccessResult(Messages.ORDEREDADDITIONALSERVICEADDED);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
         OrderedAdditionalService orderedAdditionalService =this.modelMapperService.forRequest().map(updateOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.save(orderedAdditionalService);
 
-        return new SuccessResult(updateOrderedAdditionalServiceRequest.getId() + " : Ordered Additional Service updated.");
+        return new SuccessResult(Messages.ORDEREDADDITIONALSERVICEUPDATED);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
         OrderedAdditionalService orderedAdditionalService = this.modelMapperService.forRequest().map(deleteOrderedAdditionalServiceRequest,OrderedAdditionalService.class);
         this.orderedAdditionalServiceDao.delete(orderedAdditionalService);
 
-        return new SuccessResult(deleteOrderedAdditionalServiceRequest.getId() + " : Ordered Additional Service deleted.");
+        return new SuccessResult(Messages.ORDEREDADDITIONALSERVICEDELETED);
     }
 
     @Override
@@ -84,12 +85,12 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
         OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceDao.getById(orderedAdditionalServiceId);
         OrderedAdditionalServiceDto orderedAdditionalServiceDto = this.modelMapperService.forDto().map(orderedAdditionalService,OrderedAdditionalServiceDto.class);
 
-        return new SuccessDataResult<OrderedAdditionalServiceDto>(orderedAdditionalServiceDto,"Ordered Additional Service found.");
+        return new SuccessDataResult<OrderedAdditionalServiceDto>(orderedAdditionalServiceDto,Messages.ORDEREDADDITIONALSERVICEFOUND);
     }
 
     private Result checkOrderedAdditionalServiceId(int orderedAdditionalServiceId) throws BusinessException {
         if (!this.orderedAdditionalServiceDao.existsById(orderedAdditionalServiceId)) {
-            throw new BusinessException("Ordered Additional Service not found.");
+            throw new BusinessException(Messages.ORDEREDADDITIONALSERVICENOTFOUND);
         }
         return new SuccessResult();
     }

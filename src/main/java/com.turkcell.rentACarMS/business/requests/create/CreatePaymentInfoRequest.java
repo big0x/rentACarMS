@@ -5,15 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreatePaymentRequest {
-
-    private double totalPayment;
-
-    private int customerId;
+public class CreatePaymentInfoRequest {
 
     private String creditCardOwnerName;
 
@@ -23,5 +18,7 @@ public class CreatePaymentRequest {
 
     private LocalDate creditCardExpirationDate;
 
-    private boolean rememberMe;
+    private int customerId;
+
+
 }

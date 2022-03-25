@@ -15,8 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRentalRequest {
-//    @ReadOnlyProperty
-//    private int id;
+
     @FutureOrPresent
     @NotNull
     private LocalDate rentDate;
